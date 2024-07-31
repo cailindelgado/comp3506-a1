@@ -1,4 +1,4 @@
-# Algorithms and Data Structures Assignment 1
+# Algorithms and Data Structures A1
 
 The first assignment for comp3506
 
