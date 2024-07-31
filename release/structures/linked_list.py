@@ -46,14 +46,18 @@ class DoublyLinkedList:
 
     def __init__(self) -> None:
         # You probably need to track some data here...
-        pass
+        self._size = 0
+        self._head = None
+        self._tail = None
 
+    #TODO Fix this
     def __str__(self) -> str:
         """
         A helper that allows you to print a DoublyLinkedList type
         via the str() method.
         """
         pass
+        return "Fix this please"
 
     """
     Simple Getters and Setters below
@@ -64,67 +68,112 @@ class DoublyLinkedList:
         Return the size of the list.
         Time complexity for full marks: O(1)
         """
-        pass
+        return self._size
 
     def get_head(self) -> Node | None:
         """
         Return the leftmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        pass
+        return self._head
 
     def set_head(self, node: Node) -> None:
         """
         Replace the leftmost node in the list.
         Time complexity for full marks: O(1)
         """
-        pass
+        self._head = node
 
     def get_tail(self) -> Node | None:
         """
         Return the rightmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        pass
+        return self.tail
 
     def set_tail(self, node: Node) -> None:
         """
         Replace the rightmost node in the list.
         Time complexity for full marks: O(1)
         """
-        pass
+        self.tail = node
 
     """
     More interesting functionality now.
     """
+
+#TODO: fix all the nasty stuff I've done in here
+
 
     def insert_to_front(self, node: Node) -> None:
         """
         Insert a node to the front of the list
         Time complexity for full marks: O(1)
         """
-        pass
+        # if empty Doubly
+
+        # if head
+
+        # if no head
+        if self._head:
+            self._head.set_prev(node)
+            self._head = node
+            self._size += 1
+        else:
+            self._head = node
 
     def insert_to_back(self, node: Node) -> None:
         """
         Insert a node to the back of the list
         Time complexity for full marks: O(1)
         """
-        pass
+
+        # if empty Doubly
+        if self._tail == self._head:   # so both None or nodes
+            pass
+
+
+        # if tail
+        if self._tail:
+            self._tail.set_next(node)
+            self._tail = node
+            self._size += 1
+        else:
+            self._tail = node
+
+        # if no tail
 
     def remove_from_front(self) -> Node | None:
         """
         Remove and return the front element
         Time complexity for full marks: O(1)
         """
-        pass
+        # if 0 items in list
+        if self._size == 0:
+            return
+
+        # if only 1 item in list
+        if self._size == 1:
+            pass
+
+
+        # if more than 1
+        if self._size >= 2:
+            out = self._head
+            self.set_head(self._head.get_next())
+            self._size -= 1
+            return out
 
     def remove_from_back(self) -> Node | None:
         """
         Remove and return the back element
         Time complexity for full marks: O(1)
         """
-        pass
+        if self._size >= 2:
+            out = self.tail
+            self.set_tail(self._tail.get_prev())
+            self._size -= 1
+            return out
 
     def find_element(self, elem: Any) -> Any | None:
         """
@@ -132,7 +181,18 @@ class DoublyLinkedList:
         node if it matches the input elem; returns None otherwise
         Time complexity for full marks: O(N)
         """
-        pass
+        if self.get_head():
+            current = self.get_head()
+
+            while current.get_next() != None:
+                if current.get_data() == elem:
+                    break
+                else: 
+                    current = current.get_next()
+
+            return current.get_data()
+        else:
+            return None
 
     def find_and_remove_element(self, elem: Any) -> Any | None:
         """
@@ -140,11 +200,40 @@ class DoublyLinkedList:
         (based on the node data) or returns None if the element is not found.
         Time complexity for full marks: O(N)
         """
-        pass
+        current = self.get_head()
+
+        if current:
+            while current.get_next() != None:  
+                if current.get_data() == elem:
+                    break
+                else: 
+                    current = current.get_next()
+
+            if !current.get_next():
+                current.get_prev().set_next(None)
+
+
+
+            previous = current.get_prev()
+            next = current.get_prev()
+
+            previous.set_next(next)
+            next.set_next(previous)
+
+
+        return current.get_data()
 
     def reverse(self) -> None:
         """
         Reverses the linked list
         Time complexity for full marks: O(1)
         """
+        temp = self._head
+        self._head = self._tail
+        self.tail = temp
         pass
+
+
+
+
+
