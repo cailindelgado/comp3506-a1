@@ -37,15 +37,23 @@ class KmerStore:
 
     def batch_insert(self, kmers: list[str]) -> None:
         """
-        Given a list of k-mers, insert them (maintaining
-        duplicates) in O(n) time.
+        Given a list of m k-mers, delete the matching ones
+        (including all duplicates).
+        [V2: Correction]
+        If the data structure contains n elements, and the input kmer list
+        contains m elements, the targeted time complexity is:
+        O(m log m) + O(n + m) amortized time (or better, of course!)
         """
         pass
 
     def batch_delete(self, kmers: list[str]) -> None:
         """
-        Given a list of k-mers, delete the matching ones
-        (including all duplicates) in O(n) time.
+        Given a list of m k-mers, delete the matching ones
+        (including all duplicates).
+        [V2: Correction]
+        If the data structure contains n elements, and the input kmer list
+        contains m elements, the targeted time complexity is:
+        O(m log m) + O(n + m) amortized time (or better, of course!)
         """
         pass
 

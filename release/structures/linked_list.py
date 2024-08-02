@@ -42,6 +42,10 @@ class Node:
 class DoublyLinkedList:
     """
     Your doubly linked list code goes here.
+    Note that any time you see `Any` in the type annotations,
+    this refers to the "data" stored inside a Node.
+
+    [V3: Note that this API was changed in the V3 spec] 
     """
 
     def __init__(self) -> None:
@@ -56,7 +60,6 @@ class DoublyLinkedList:
         A helper that allows you to print a DoublyLinkedList type
         via the str() method.
         """
-
         out = "<"
         node = self._head
         if node:
@@ -86,21 +89,23 @@ class DoublyLinkedList:
 
     def set_head(self, node: Node) -> None:
         """
-        Replace the leftmost node in the list.
+        Replace the leftmost node's data with the given data.
+        If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
         self._head = node
 
     def get_tail(self) -> Node | None:
         """
-        Return the rightmost node in the list, if it exists.
+        Return the data of the rightmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
         return self.tail
 
     def set_tail(self, node: Node) -> None:
         """
-        Replace the rightmost node in the list.
+        Replace the rightmost node's data with the given data.
+        If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
         self.tail = node
@@ -110,11 +115,11 @@ class DoublyLinkedList:
     """
 
 #TODO: fix all the nasty stuff I've done in here
-
-
     def insert_to_front(self, node: Node) -> None:
         """
-        Insert a node to the front of the list
+        Insert the given data to the front of the list.
+        Hint: You will need to create a Node type containing
+        the given data.
         Time complexity for full marks: O(1)
         """
         # if empty Doubly
@@ -131,7 +136,7 @@ class DoublyLinkedList:
 
     def insert_to_back(self, node: Node) -> None:
         """
-        Insert a node to the back of the list
+        Insert the given data (in a node) to the back of the list
         Time complexity for full marks: O(1)
         """
 
@@ -152,7 +157,7 @@ class DoublyLinkedList:
 
     def remove_from_front(self) -> Node | None:
         """
-        Remove and return the front element
+        Remove the front node, and return the data it holds.
         Time complexity for full marks: O(1)
         """
         # if 0 items in list
@@ -173,7 +178,7 @@ class DoublyLinkedList:
 
     def remove_from_back(self) -> Node | None:
         """
-        Remove and return the back element
+        Remove the back node, and return the data it holds.
         Time complexity for full marks: O(1)
         """
         if self._size >= 2:
@@ -184,8 +189,8 @@ class DoublyLinkedList:
 
     def find_element(self, elem: Any) -> Any | None:
         """
-        Looks at the data inside each node of the list and returns the
-        node if it matches the input elem; returns None otherwise
+        Looks at the data inside each node of the list and returns True
+        if a match is found; False otherwise.
         Time complexity for full marks: O(N)
         """
         if self.get_head():
@@ -203,8 +208,9 @@ class DoublyLinkedList:
 
     def find_and_remove_element(self, elem: Any) -> Any | None:
         """
-        Finds, removes, and returns the first instance of elem
-        (based on the node data) or returns None if the element is not found.
+        Looks at the data inside each node of the list; if a match is
+        found, this node is removed from the linked list, and True is returned.
+        False is returned if no match is found.
         Time complexity for full marks: O(N)
         """
         current = self.get_head()
@@ -241,5 +247,3 @@ class DoublyLinkedList:
 
         self._head, self._tail = self._tail, self._head
         pass
-
-

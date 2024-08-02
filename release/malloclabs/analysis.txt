@@ -8,7 +8,7 @@ Question 1: Briefly describe, in two or three sentences, how your data
 structure works, including any variables or data maintained internally.
 This should take about four sentences.
 
-Answer: 
+Answer:
 
 ----
 
