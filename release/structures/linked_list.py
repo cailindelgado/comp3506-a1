@@ -56,8 +56,15 @@ class DoublyLinkedList:
         A helper that allows you to print a DoublyLinkedList type
         via the str() method.
         """
-        pass
-        return "Fix this please"
+
+        out = "<"
+        node = self._head
+        if node:
+            while node.get_next() != None:
+                out += node.get_data()
+                node = node.get_next()
+
+        return out + ">"
 
     """
     Simple Getters and Setters below
@@ -209,7 +216,7 @@ class DoublyLinkedList:
                 else: 
                     current = current.get_next()
 
-            if !current.get_next():
+            if not current.get_next():
                 current.get_prev().set_next(None)
 
 
@@ -228,12 +235,11 @@ class DoublyLinkedList:
         Reverses the linked list
         Time complexity for full marks: O(1)
         """
-        temp = self._head
-        self._head = self._tail
-        self.tail = temp
+        # temp = self._head
+        # self._head = self._tail
+        # self.tail = temp
+
+        self._head, self._tail = self._tail, self._head
         pass
-
-
-
 
 
