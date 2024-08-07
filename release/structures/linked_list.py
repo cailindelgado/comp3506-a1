@@ -53,20 +53,23 @@ class DoublyLinkedList:
         self._size = 0
         self._head = None
         self._tail = None
+        self._reverse = False
 
-    #TODO Fix this
     def __str__(self) -> str:
         """
         A helper that allows you to print a DoublyLinkedList type
         via the str() method.
         """
         out = "<"
-        node = self._head
-        if node:
-            while node.get_next() != None:
-                out += node.get_data() + ","
-                node = node.get_next()
+        current = self._head
 
+        while current is not None:
+            if current.get_next() == None:
+                out += f'{current.get_data()}'
+            else:
+                out += f'{current.get_data()}, '
+
+            current = current.get_next()
         return out + ">"
 
     """
@@ -137,9 +140,22 @@ class DoublyLinkedList:
         new = Node(data)
         new.set_next(self._head)
 
-        if self._head != None:
+        if self._head is not None:
             self._head.set_prev(new)
 
+        if self._tail is None:
+            self._tail = new
+        
+        # if self.get_size() == 1:
+        #     if self._head is None and self._tail is not None:
+        #         new.set_next(self._tail)
+        #         self._tail.set_prev(new)
+        #     else:   # otherwise the tail is empy
+        #         new.set_next(self._head)
+        #
+        # if self._head != None:
+        #     self._head.set_prev(new)
+        #
         self._head = new
         self._size += 1
 
@@ -151,8 +167,20 @@ class DoublyLinkedList:
         new = Node(data)
         new.set_prev(self._tail)
 
-        if self._tail != None:
+        if self._tail is not None:
             self._tail.set_next(new)
+
+        if self._head is None:
+            self._head = new
+        # if self.get_size() == 1:
+        #     if self._tail is None and self._head is not None:
+        #         new.set_prev(self._head)
+        #         self._head.set_next(new)
+        #     else:
+        #         new.set_prev(self._tail)
+        #
+        # if self._tail != None:
+        #     self._tail.set_next(new)
 
         self._tail = new
         self._size += 1
@@ -163,7 +191,7 @@ class DoublyLinkedList:
         Time complexity for full marks: O(1)
         """
         out = self.get_head() 
-        
+
         # what happens when only 1 item in list
         if self.get_size() == 1:
             self._head = None
@@ -171,7 +199,7 @@ class DoublyLinkedList:
             self._size -= 1
 
         # what happens when more than one item in list
-        if (self.get_size() >= 2) and (self._head != None):
+        if (self.get_size() >= 2) and (self._head is not None):
             # set the current head to be the second position
             self._head = self._head.get_next()
             self._size -= 1
@@ -192,7 +220,7 @@ class DoublyLinkedList:
             self._size -= 1
 
         # what happens when more than one item in list
-        if (self.get_size() >= 2) and (self._tail != None):
+        if (self.get_size() >= 2) and (self._tail is not None):
             self._tail = self._tail.get_prev()
             self._size -= 1
 
@@ -204,22 +232,20 @@ class DoublyLinkedList:
         if a match is found; False otherwise.
         Time complexity for full marks: O(N)
         """
-        out = False
-        if self._head:
-            current = self._head
+        found = False
+        current = self._head
 
-            while True:
+        if current:
+            while current is not None:
                 if current.get_data() == elem:
-                    out = True
+                    found = True
                     break
-                
-                if current.get_next() == None:
-                    break
-                else: 
-                    current = current.get_next()
+    
+                current = current.get_next()
 
-        return out
+        return found
 
+    # TODO fix whatever I've done here and onwards
     def find_and_remove_element(self, elem: Any) -> bool:
         """
         Looks at the data inside each node of the list; if a match is
@@ -227,27 +253,28 @@ class DoublyLinkedList:
         False is returned if no match is found.
         Time complexity for full marks: O(N)
         """
-        current = self.get_head()
         found = False
+        current = self._head
 
         if current:
-            while current.get_next() != None:  
+            while current is not None:
                 if current.get_data() == elem:
                     found = True
                     break
-                else: 
-                    current = current.get_next()
 
-            if not current.get_next():
-                current.get_prev().set_next(None)
+                current = current.get_next()
 
+        if found and current:
+            next = current.get_next()
+            prev = current.get_prev()
 
-
-            previous = current.get_prev()
-            next = current.get_prev()
-
-            previous.set_next(next)
-            next.set_next(previous)
+            if next is not None and prev is not None:
+                next.set_prev(prev)
+                prev.set_next(next)
+            elif next is None and prev is not None:
+                prev.set_next(None)
+            elif next is not None and prev is None:
+                next.set_prev(None)
 
         return found
 
@@ -257,5 +284,5 @@ class DoublyLinkedList:
         Time complexity for full marks: O(1)
         """
         # python shorthand for swapping variables is: a,b = b, a
-        self._head, self._tail = self._tail, self._head
-
+        #flip the flag when reverse is called
+        self._reverse = not self._reverse
