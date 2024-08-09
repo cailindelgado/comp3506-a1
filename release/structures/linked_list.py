@@ -7,7 +7,7 @@ Joel Mackenzie and Vladimir Morozov
 # so we can hint Node get_next
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, reveal_type
 
 
 class Node:
@@ -26,17 +26,30 @@ class Node:
     def get_data(self) -> Any:
         return self._data
 
-    def set_next(self, node: Node | None) -> None:
-        self._next = node
+    # update across file
+    def set_next(self, node: Node | None, reverse: bool | None) -> None:
+        if reverse:
+            self._prev = node
+        else:
+            self._next = node
 
-    def get_next(self) -> Node | None:
-        return self._next
+    def get_next(self, reverse: bool | None) -> Node | None:
+        if reverse:
+            return self._prev
+        else:
+            return self._next
 
-    def set_prev(self, node: Node | None) -> None:
-        self._prev = node
+    def set_prev(self, node: Node | None, reverse: bool | None) -> None:
+        if reverse:
+            self._next = node
+        else:
+            self._prev = node
 
-    def get_prev(self) -> Node | None:
-        return self._prev
+    def get_prev(self, reverse: bool | None) -> Node | None:
+        if reverse:
+            return self._next
+        else:
+            return self._prev
 
 
 class DoublyLinkedList:
@@ -64,12 +77,12 @@ class DoublyLinkedList:
         current = self._head
 
         while current is not None:
-            if current.get_next() == None:
+            if current.get_next(self._reverse) == None:
                 out += f'{current.get_data()}'
             else:
                 out += f'{current.get_data()}, '
 
-            current = current.get_next()
+            current = current.get_next(self._reverse)
         return out + ">"
 
     """
@@ -130,6 +143,7 @@ class DoublyLinkedList:
     Note that any time you see 'Any' in the type annotations,
     this refers to the "data" stored inside a Node.
     """
+
     def insert_to_front(self, data: Any) -> None:
         """
         Insert the given data to the front of the list.
@@ -138,24 +152,14 @@ class DoublyLinkedList:
         Time complexity for full marks: O(1)
         """
         new = Node(data)
-        new.set_next(self._head)
+        new.set_next(self._head, self._reverse)
 
         if self._head is not None:
-            self._head.set_prev(new)
+            self._head.set_prev(new, self._reverse)
 
         if self._tail is None:
             self._tail = new
-        
-        # if self.get_size() == 1:
-        #     if self._head is None and self._tail is not None:
-        #         new.set_next(self._tail)
-        #         self._tail.set_prev(new)
-        #     else:   # otherwise the tail is empy
-        #         new.set_next(self._head)
-        #
-        # if self._head != None:
-        #     self._head.set_prev(new)
-        #
+
         self._head = new
         self._size += 1
 
@@ -165,22 +169,13 @@ class DoublyLinkedList:
         Time complexity for full marks: O(1)
         """
         new = Node(data)
-        new.set_prev(self._tail)
+        new.set_prev(self._tail, self._reverse)
 
         if self._tail is not None:
-            self._tail.set_next(new)
+            self._tail.set_next(new, self._reverse)
 
         if self._head is None:
             self._head = new
-        # if self.get_size() == 1:
-        #     if self._tail is None and self._head is not None:
-        #         new.set_prev(self._head)
-        #         self._head.set_next(new)
-        #     else:
-        #         new.set_prev(self._tail)
-        #
-        # if self._tail != None:
-        #     self._tail.set_next(new)
 
         self._tail = new
         self._size += 1
@@ -201,7 +196,7 @@ class DoublyLinkedList:
         # what happens when more than one item in list
         if (self.get_size() >= 2) and (self._head is not None):
             # set the current head to be the second position
-            self._head = self._head.get_next()
+            self._head = self._head.get_next(self._reverse)
             self._size -= 1
 
         return out
@@ -221,7 +216,7 @@ class DoublyLinkedList:
 
         # what happens when more than one item in list
         if (self.get_size() >= 2) and (self._tail is not None):
-            self._tail = self._tail.get_prev()
+            self._tail = self._tail.get_prev(self._reverse)
             self._size -= 1
 
         return out
@@ -241,11 +236,10 @@ class DoublyLinkedList:
                     found = True
                     break
     
-                current = current.get_next()
+                current = current.get_next(self._reverse)
 
         return found
 
-    # TODO fix whatever I've done here and onwards
     def find_and_remove_element(self, elem: Any) -> bool:
         """
         Looks at the data inside each node of the list; if a match is
@@ -262,22 +256,25 @@ class DoublyLinkedList:
                     found = True
                     break
 
-                current = current.get_next()
+                current = current.get_next(self._reverse)
 
         if found and current:
-            next = current.get_next()
-            prev = current.get_prev()
+            next = current.get_next(None)
+            prev = current.get_prev(None)
 
-            if next is not None and prev is not None:
-                next.set_prev(prev)
-                prev.set_next(next)
-            elif next is None and prev is not None:
-                prev.set_next(None)
-            elif next is not None and prev is None:
-                next.set_prev(None)
+            if next is not None and prev is not None:  # if current is in middle
+                next.set_prev(prev, None)
+                prev.set_next(next, None)
+            elif next is None and prev is not None:  # if current is the tail
+                prev.set_next(None, None)
+                self._tail = prev
+            elif next is not None and prev is None:  # if current is the head
+                next.set_prev(None, None)
+                self._head = next
 
         return found
 
+# TODO figure out how to do this without bouncing between the functions 
     def reverse(self) -> None:
         """
         Reverses the linked list
