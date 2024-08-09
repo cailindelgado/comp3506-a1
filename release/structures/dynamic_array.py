@@ -32,6 +32,7 @@ class DynamicArray:
         self._left *= 2
         self._right *=  2
         new = [None] * (self.get_capacity() * 2)
+
         new_start = self._left - self._size_left
         new_end = self._right - self._size_right
         
@@ -46,7 +47,7 @@ class DynamicArray:
         Return None if index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if not 0 <= abs(index) <= self.get_size():
+        if not ((-1 * self.get_size()) <= index < self.get_size()):
             return
         return self._array[self.rev_values(index)]
 
@@ -63,7 +64,7 @@ class DynamicArray:
         Do not modify the list if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if not 0 <= abs(index) <= self.get_size():
+        if not ((-1 * self.get_size()) <= index < self.get_size()):
             return
 
         self._array[self.rev_values(index)] = element
@@ -109,10 +110,23 @@ class DynamicArray:
         """
         Handles reversing the logic of the indexes of the array
         """
-        leftovers = self.get_capacity() - self.get_size()
-        out = abs(index)
-        if self._reverse:
-            out -= leftovers;
+        # new implementation
+        leftovers_l = self._left - self._size_left
+        leftovers_r = self._right - self._size_right
+
+        out = index
+        if index >= 0 and not self._reverse:
+            out = index + (leftovers_l)
+
+        if index < 0 and not self._reverse:
+            out = index - (leftovers_r)
+
+        if self._reverse and index >= 0:
+            out = (-1 * index + 1) - (leftovers_r)
+
+        if self._reverse and index < 0:
+            out = (-1 * index + 1) + (leftovers_l)
+
         return out
 
     def remove(self, element: Any) -> None:
@@ -122,14 +136,20 @@ class DynamicArray:
         Time complexity for full marks: O(N)
         """
         found = False
-        for idx in range(self.get_size()):
-            if self._array[idx] == element:
+        start = self._left - self._size_left
+        end = self._right - self._size_right
+
+        for idx in range(start, end + 1):  # go through the position the array is sitting in
+            if not found and (self._array[idx] == element):
                 found = True
+
+                if idx > self._left:  # dealing with decreasing the size
+                   self._size_right -= 1
+                else:  # if on the other side or in middle then reduce known size on that side by 1
+                    self._size_left -= 1
 
             if found:
                 self._array[idx] = self._array[idx + 1]
-
-        self._size -= 1
 
     def remove_at(self, index: int) -> Any | None:
         """
@@ -137,8 +157,14 @@ class DynamicArray:
         If there is no such element, leave the array unchanged and return None.
         Time complexity for full marks: O(N)
         """
-        self.set_at(index, None)
-        for idx in range(index, self._size):
+        if self._array[index] == None:
+            return 
+        else:
+            self.set_at(index, None)
+
+        end = self._right - self._size_right  # the position of the final element of the array
+
+        for idx in range(index, end + 1):
             self._array[idx] = self._array[idx + 1]
 
     def is_empty(self) -> bool:
@@ -176,7 +202,9 @@ class DynamicArray:
         """
         # Merge sort
         middle = self.get_size() // 2
-        # left = 
+
+
+
 
 
 
