@@ -13,8 +13,8 @@ class DynamicArray:
         """
         self._size_left = 0
         self._size_right = 0
-        self._left = 16
-        self._right = 16
+        self._left = 2
+        self._right = 2
         self._array = [None] * (self._left + self._right)
         self._reverse = False
 
@@ -64,6 +64,7 @@ class DynamicArray:
         Do not modify the list if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
+        print("here")
         if not ((-1 * self.get_size()) <= index < self.get_size()):
             return
 
@@ -85,7 +86,8 @@ class DynamicArray:
         if self._right == self._size_right:
             self.__resize()
 
-        self.set_at(self._right - self._size_right, element)
+        print(self._right - self._size_right)
+        self.set_at(self._right - self._size_right - 1, element)
         
     def prepend(self, element: Any) -> None:
         """
@@ -201,6 +203,9 @@ class DynamicArray:
         Time complexity for full marks: O(NlogN)
         """
         # Merge sort
+        if self.get_size() <= 1:
+            return
+
         middle = self.get_size() // 2
 
 

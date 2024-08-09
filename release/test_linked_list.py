@@ -1,10 +1,5 @@
-# Import helper libraries
-# import random
-# import sys
-# import time
-# import argparse
+import pytest
 
-# import doubly linked list
 from structures.linked_list import DoublyLinkedList as DL
 
 def set_up(check: int) -> DL:
@@ -181,27 +176,86 @@ def test_adv():
     print(str(dll))
     assert dll.get_tail() == 1
 
-# testing insert to front
-# 
-# testing insert to back
-#
-# testing remove to front
-#
-# testing remove to back
-#
-# testing finding the element
-# def test_find_elem_1():
-#     my_list = set_up(2)
-#     assert(my_list.find_element(1) == True)
-#
-# # testing find and remove elem
-# def test_find_and_remove_1():
-#     my_list = set_up(2)
-#     assert(my_list.find_and_remove_element(2) == True)
-#
-# def test_find_and_remove_2():
-#     my_list = set_up(2)
-#     assert(my_list.find_and_remove_element(29) == False)
-#
-# testing reverse
-#
+
+
+class TestLinkedList:
+
+    @pytest.fixture
+    def linked_list(self):
+        return DL()
+
+    def test_insert_to_front(self, linked_list):
+        linked_list.insert_to_front(1)
+        assert linked_list.get_head() == 1
+        assert linked_list.get_tail() == 1
+        assert linked_list.get_size() == 1
+
+        linked_list.insert_to_front(2)
+        assert linked_list.get_head() == 2
+        assert linked_list.get_tail() == 1
+        assert linked_list.get_size() == 2
+
+    def test_insert_to_back(self, linked_list):
+        linked_list.insert_to_back(1)
+        assert linked_list.get_head() == 1
+        assert linked_list.get_tail() == 1
+        assert linked_list.get_size() == 1
+
+        linked_list.insert_to_back(2)
+        assert linked_list.get_head() == 1
+        assert linked_list.get_tail() == 2
+        assert linked_list.get_size() == 2
+
+    def test_remove_from_front(self, linked_list):
+        linked_list.insert_to_back(1)
+        linked_list.insert_to_back(2)
+        assert linked_list.remove_from_front() == 1
+        assert linked_list.get_head() == 2
+        assert linked_list.get_size() == 1
+
+        assert linked_list.remove_from_front() == 2
+        assert linked_list.get_head() is None
+        assert linked_list.get_size() == 0
+
+    def test_remove_from_back(self, linked_list):
+        linked_list.insert_to_back(1)
+        linked_list.insert_to_back(2)
+        assert linked_list.remove_from_back() == 2
+        assert linked_list.get_tail() == 1
+        assert linked_list.get_size() == 1
+
+        assert linked_list.remove_from_back() == 1
+        assert linked_list.get_tail() is None
+        assert linked_list.get_size() == 0
+
+    def test_find_element(self, linked_list):
+        linked_list.insert_to_back(1)
+        linked_list.insert_to_back(2)
+        linked_list.insert_to_back(3)
+        assert linked_list.find_element(2) == True
+        assert linked_list.find_element(4) == False
+
+    def test_find_and_remove_element(self, linked_list):
+        linked_list.insert_to_back(1)
+        linked_list.insert_to_back(2)
+        linked_list.insert_to_back(3)
+        assert linked_list.find_and_remove_element(2) == True
+        assert linked_list.get_size() == 2
+        assert linked_list.find_and_remove_element(4) == False
+        assert linked_list.get_size() == 2
+
+    def test_reverse(self, linked_list):
+        linked_list.insert_to_back(1)
+        linked_list.insert_to_back(2)
+        linked_list.insert_to_back(3)
+        print(linked_list)
+        linked_list.reverse()
+        print(linked_list)
+        assert linked_list.get_head() == 3
+        assert linked_list.get_tail() == 1
+        linked_list.reverse()
+        assert linked_list.get_head() == 1
+        assert linked_list.get_tail() == 3
+
+if __name__ == '__main__':
+    pytest.main()

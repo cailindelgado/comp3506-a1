@@ -26,7 +26,6 @@ class Node:
     def get_data(self) -> Any:
         return self._data
 
-    # update across file
     def set_next(self, node: Node | None, reverse: bool | None) -> None:
         if reverse:
             self._prev = node
@@ -101,8 +100,12 @@ class DoublyLinkedList:
         Return the data of the leftmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        if self._head:
-            return self._head.get_data()
+        if not self._reverse:
+            if self._head:
+                return self._head.get_data()
+        else:
+            if self._tail:
+                return self._tail.get_data()
 
         return
 
@@ -112,8 +115,12 @@ class DoublyLinkedList:
         If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
-        if self._head:
-            self._head.set_data(data)
+        if not self._reverse:
+            if self._head:
+                self._head.set_data(data)
+        else: 
+            if self._tail:
+                return self._tail.set_data(data)
 
         return
 
@@ -122,8 +129,12 @@ class DoublyLinkedList:
         Return the data of the rightmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        if self._tail:
-            return self._tail.get_data()
+        if not self._reverse:
+            if self._tail:
+                return self._tail.get_data()
+        else:
+            if self._head:
+                return self._head.get_data()
 
         return
 
@@ -133,8 +144,12 @@ class DoublyLinkedList:
         If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
-        if self._tail:
-            self._tail.set_data(data)
+        if not self._reverse:
+            if self._tail:
+                self._tail.set_data(data)
+        else:
+            if self._head:
+                self._head.set_data(data)
 
         return
 
@@ -258,7 +273,7 @@ class DoublyLinkedList:
 
                 current = current.get_next(self._reverse)
 
-        if found and current:
+        if found and current:  # if found elem
             next = current.get_next(None)
             prev = current.get_prev(None)
 
@@ -272,9 +287,10 @@ class DoublyLinkedList:
                 next.set_prev(None, None)
                 self._head = next
 
+            self._size -= 1
+
         return found
 
-# TODO figure out how to do this without bouncing between the functions 
     def reverse(self) -> None:
         """
         Reverses the linked list
