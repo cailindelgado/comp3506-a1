@@ -31,15 +31,15 @@ class DynamicArray:
         """
         self._left *= 2
         self._right *=  2
-        new = [None] * (self.get_capacity() * 2)
+        new_array = [None] * self.get_capacity()
 
         new_start = self._left - self._size_left
         new_end = self._right - self._size_right
         
         for idx in range(new_start, new_end + 1):  # range(a, b) -> [a,b) want [a,b]
-            self._array[idx] = new[idx]
+            self._array[idx] = new_array[idx]
 
-        self._array = new
+        self._array = new_array
 
     def get_at(self, index: int) -> Any | None:
         """
@@ -64,7 +64,6 @@ class DynamicArray:
         Do not modify the list if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        print("here")
         if not ((-1 * self.get_size()) <= index < self.get_size()):
             return
 
@@ -86,7 +85,6 @@ class DynamicArray:
         if self._right == self._size_right:
             self.__resize()
 
-        print(self._right - self._size_right)
         self.set_at(self._right - self._size_right - 1, element)
         
     def prepend(self, element: Any) -> None:
@@ -95,11 +93,10 @@ class DynamicArray:
         Time complexity for full marks: O(1*)
         """
         self._size_left += 1
-
         if self._left == self._size_left:
             self.__resize()
 
-        self.set_at(self._left - self._size_left, element)
+        self.set_at(self._left - self._size_left - 1, element)
 
     def reverse(self) -> None:
         """
@@ -140,6 +137,8 @@ class DynamicArray:
         found = False
         start = self._left - self._size_left
         end = self._right - self._size_right
+
+        # print(f'starting at: {start}, ending at: {end + 1}')
 
         for idx in range(start, end + 1):  # go through the position the array is sitting in
             if not found and (self._array[idx] == element):
