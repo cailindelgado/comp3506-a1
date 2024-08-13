@@ -1,6 +1,10 @@
 import pytest
 from structures.dynamic_array import DynamicArray as da
 
+# create a function for generating a list/array of a certain size and then randomsize the inputs. 
+# for large functions
+
+
 class TestDynamicArray:
 
     @pytest.fixture
@@ -37,17 +41,15 @@ class TestDynamicArray:
 
     def test_remove(self, dynamic_array):
         dynamic_array.append(1)
-        print(dynamic_array)
         dynamic_array.append(2)
-        print(dynamic_array)
         dynamic_array.remove(1)
-        assert dynamic_array._array == [None, None, None, None, 2, None, None, None]
+        assert dynamic_array._array == [None, None, 2, None]
 
-    # def test_remove_at(self, dynamic_array):
-    #     dynamic_array.append(1)
-    #     dynamic_array.append(2)
-    #     dynamic_array.remove_at(0)
-    #     assert dynamic_array._array == [None, None, 2, None]
+    def test_remove_at(self, dynamic_array):
+        dynamic_array.append(1)
+        dynamic_array.append(2)
+        dynamic_array.remove_at(0)
+        assert dynamic_array._array == [None, None, 2, None]
 
     def test_is_empty(self, dynamic_array):
         assert dynamic_array.is_empty() == True

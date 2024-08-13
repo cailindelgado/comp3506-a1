@@ -29,17 +29,24 @@ class DynamicArray:
         """
         Create a new section of "storage" to hold the data
         """
+        old_start = self._left - self._size_left
+        old_end = self._left + self._size_right 
         self._left *= 2
         self._right *=  2
         new_array = [None] * self.get_capacity()
 
         new_start = self._left - self._size_left
-        new_end = self._right - self._size_right
         
-        for idx in range(new_start, new_end + 1):  # range(a, b) -> [a,b) want [a,b]
-            self._array[idx] = new_array[idx]
+        print(f'{self._size_right}, {self._size_left}')
+        # print(f'{new_start}, {self._left}, {self._size_left}')
+        print(f'before: {self}')
+        # print(f'{old_end}')
+        for idx in range(old_start, old_end + 1):  # this needs to go from the old starting index to the old end + 1 so you only move over the values, not the "empty" spaces
+            print(f'old value: {self._array[idx]}, new value: {new_array[new_start + idx]}')
+            new_array[new_start + idx] = self._array[idx]
 
         self._array = new_array
+        # print(f'after: {self}')
 
     def get_at(self, index: int) -> Any | None:
         """
@@ -81,10 +88,10 @@ class DynamicArray:
         Add an element to the back of the array.
         Time complexity for full marks: O(1*) (* means amortized)
         """
-        self._size_right += 1
         if self._right == self._size_right:
             self.__resize()
 
+        self._size_right += 1
         self.set_at(self._right - self._size_right - 1, element)
         
     def prepend(self, element: Any) -> None:
@@ -92,10 +99,10 @@ class DynamicArray:
         Add an element to the front of the array.
         Time complexity for full marks: O(1*)
         """
-        self._size_left += 1
         if self._left == self._size_left:
             self.__resize()
 
+        self._size_left += 1
         self.set_at(self._left - self._size_left - 1, element)
 
     def reverse(self) -> None:
@@ -136,12 +143,15 @@ class DynamicArray:
         """
         found = False
         start = self._left - self._size_left
-        end = self._right - self._size_right
+        end = self._left + self._size_right
 
         # print(f'starting at: {start}, ending at: {end + 1}')
 
-        for idx in range(start, end + 1):  # go through the position the array is sitting in
+        for idx in range(start, end - 1):  # go through the position the array is sitting in
             if not found and (self._array[idx] == element):
+
+                # print(self._array[idx])
+
                 found = True
 
                 if idx > self._left:  # dealing with decreasing the size
@@ -150,7 +160,9 @@ class DynamicArray:
                     self._size_left -= 1
 
             if found:
-                self._array[idx] = self._array[idx + 1]
+                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
+            
+            self._array[-1] = None
 
     def remove_at(self, index: int) -> Any | None:
         """
@@ -158,9 +170,10 @@ class DynamicArray:
         If there is no such element, leave the array unchanged and return None.
         Time complexity for full marks: O(N)
         """
-        if self._array[index] == None:
+        if self._array[self.rev_values(index)] == None:
             return 
         else:
+            # print(f'{index}, {self.rev_values(index)}')
             self.set_at(index, None)
 
         end = self._right - self._size_right  # the position of the final element of the array

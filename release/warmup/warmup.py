@@ -55,6 +55,7 @@ def main_character(instring: list[int]) -> int:
     main_character([7, 1, 2, 7]) == 3
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
+    pass
 
 
 def missing_odds(inputs: list[int]) -> int:
