@@ -31,22 +31,17 @@ class DynamicArray:
         """
         old_start = self._left - self._size_left
         old_end = self._left + self._size_right 
+
         self._left *= 2
         self._right *=  2
         new_array = [None] * self.get_capacity()
 
         new_start = self._left - self._size_left
         
-        print(f'{self._size_right}, {self._size_left}')
-        # print(f'{new_start}, {self._left}, {self._size_left}')
-        print(f'before: {self}')
-        # print(f'{old_end}')
-        for idx in range(old_start, old_end + 1):  
-            print(f'old value: {self._array[idx]}, new value: {new_array[new_start + idx]}')
-            new_array[new_start + idx] = self._array[idx]
+        for idx in range(old_start, old_end):  
+            new_array[new_start + idx - old_start + 1] = self._array[idx]
 
         self._array = new_array
-        # print(f'after: {self}')
 
     def get_at(self, index: int) -> Any | None:
         """
@@ -56,6 +51,7 @@ class DynamicArray:
         """
         if not ((-1 * self.get_size()) <= index < self.get_size()):
             return
+
         return self._array[self.rev_values(index)]
 
     def __getitem__(self, index: int) -> Any | None:
@@ -163,27 +159,26 @@ class DynamicArray:
     def remove_at(self, index: int) -> Any | None:
         """
         Remove the element at the given index from the array and return the removed element.
-        If there is no such element, leave the array unchanged and return None.
+        If there is no such element, leave the array unchanged and return None.  # does if there is no such elem mean that if None?
         Time complexity for full marks: O(N)
         """
         if self.get_at(index) == None:
             return 
-        else:
-            self.set_at(index, None)
 
-            if self.rev_values(index) > self._left:  # dealing with decreasing the size
-               self._size_right -= 1
-            else:  # if on the other side or in middle then reduce known size on that side by 1
-                self._size_left -= 1
+        self.set_at(index, None)
 
-        end = self._right - self._size_right  # the position of the final element of the array
+        # update size
+        if self.rev_values(index) >= self._left:  # if on right half 
+            self._size_right -= 1
 
-        # print(f'index: {self.rev_values(index)}, self: {self}')
-        for idx in range(self.rev_values(index), end - 1):
+            for idx in range(self.rev_values(index), self.get_capacity() - 1):  # push in from right
                 self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
-            
-        self.set_at(-1, None)
+        else:  
+            self._size_left -= 1
 
+            for idx in range(1, self.rev_values(index), -1):  # push in from left
+                self._array[idx], self._array[idx - 1] = self._array[idx - 1], self._array[idx]
+         
     def is_empty(self) -> bool:
         """
         Boolean helper to tell us if the structure is empty or not
@@ -222,11 +217,5 @@ class DynamicArray:
             return
 
         middle = self.get_size() // 2
-
-
-
-
-
-
 
 

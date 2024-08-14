@@ -57,13 +57,13 @@ class TestDynamicArray:
         dynamic_array.append(1)
         assert dynamic_array.is_empty() == False
 
-    # def test_is_full(self, dynamic_array):
-    #     assert dynamic_array.is_full() == False
-    #     dynamic_array.append(1)
-    #     dynamic_array.append(2)
-    #     dynamic_array.append(3)
-    #     dynamic_array.append(4)
-    #     assert dynamic_array.is_full() == True
+    def test_is_full(self, dynamic_array):
+        assert dynamic_array.is_full() == False
+        dynamic_array.append(1)
+        dynamic_array.append(2)
+        dynamic_array.prepend(3)
+        dynamic_array.prepend(4)
+        assert dynamic_array.is_full() == True
 
     def test_get_size(self, dynamic_array):
         assert dynamic_array.get_size() == 0
@@ -73,13 +73,9 @@ class TestDynamicArray:
     def test_get_capacity(self, dynamic_array):
         assert dynamic_array.get_capacity() == 4
 
-    # def test_resize(self, dynamic_array):
-    #     dynamic_array.append(1)
-    #     dynamic_array.append(1)
-    #     dynamic_array.append(1)
-    #     dynamic_array.append(1)
-    #     print(dynamic_array)
-    #     assert False == True
-
-
-
+    def test_resize(self, dynamic_array):
+        dynamic_array.append(1)
+        dynamic_array.append(1)
+        dynamic_array.append(1)
+        dynamic_array.append(1)
+        assert dynamic_array._array == [None, None, None, None, 1, 1, 1, 1]
