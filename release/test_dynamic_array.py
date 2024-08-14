@@ -1,3 +1,4 @@
+from _pytest.runner import TResult
 import pytest
 from structures.dynamic_array import DynamicArray as da
 
@@ -71,4 +72,14 @@ class TestDynamicArray:
 
     def test_get_capacity(self, dynamic_array):
         assert dynamic_array.get_capacity() == 4
+
+    # def test_resize(self, dynamic_array):
+    #     dynamic_array.append(1)
+    #     dynamic_array.append(1)
+    #     dynamic_array.append(1)
+    #     dynamic_array.append(1)
+    #     print(dynamic_array)
+    #     assert False == True
+
+
 

@@ -28,6 +28,7 @@ There will be hidden tests in each category that will be published only after th
 You may wish to import your data structures to help you with some of the
 problems. Or maybe not. We did it for you just in case.
 """
+import typing_extensions
 from structures.bit_vector import BitVector
 from structures.dynamic_array import DynamicArray
 from structures.linked_list import DoublyLinkedList, Node
@@ -55,7 +56,16 @@ def main_character(instring: list[int]) -> int:
     main_character([7, 1, 2, 7]) == 3
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
-    pass
+    count = 0
+    for item in instring:  # O(n)
+        count += 1 
+
+    for i in range(count):  
+        for j in range(i + 1, count):
+            if instring[i] == instring[j]:
+                return i
+
+    return -1  # O(n^2)
 
 
 def missing_odds(inputs: list[int]) -> int:
@@ -83,9 +93,25 @@ def missing_odds(inputs: list[int]) -> int:
     missing_odds([4, 1]) == 3
     missing_odds([4, 1, 8, 5]) == 10    # 3 and 7 are missing
     """
+    # put everything into the Dynamic array
+    da = DynamicArray()
 
-    # YOUR CODE GOES HERE
-    pass
+    for item in inputs:
+        da.append(item)
+
+    # sort da
+    da.sort()
+    
+    out = 0
+    start = da[0]
+    end = da[-1]
+
+    if isinstance(start, int) and isinstance(end, int):  # to keep lsp quiet
+        for number in range(start, end + 1):  # range(a, b) gives [a, b)
+            if number % 2 != 0:
+                out += number
+
+    return out  # O(nlogn) (if sort is mergesort)
 
 
 def k_cool(k: int, n: int) -> int:
@@ -186,6 +212,22 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     road_illumination(15, [15, 5, 3, 7, 9, 14, 0]) == 2.5
     road_illumination(5, [2, 5]) == 2.0
     """
+    radius = 0
+    da = DynamicArray()
 
-    # YOUR CODE GOES HERE
-    pass
+    for item in poles:  # O(n) 
+        da.append(item)
+
+    da.sort()  # O(nlogn)
+
+    lmp = da[0]
+    rmp = da[-1]  # rmp = right most pole
+
+    if isinstance(lmp, int) and isinstance(rmp, int):
+        while lmp - radius > 0:
+            radius += 1
+
+        while rmp + radius < 0:
+            radius += 1
+
+    return radius  # O(nlogn)

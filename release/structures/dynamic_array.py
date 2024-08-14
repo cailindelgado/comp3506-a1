@@ -41,7 +41,7 @@ class DynamicArray:
         # print(f'{new_start}, {self._left}, {self._size_left}')
         print(f'before: {self}')
         # print(f'{old_end}')
-        for idx in range(old_start, old_end + 1):  # this needs to go from the old starting index to the old end + 1 so you only move over the values, not the "empty" spaces
+        for idx in range(old_start, old_end + 1):  
             print(f'old value: {self._array[idx]}, new value: {new_array[new_start + idx]}')
             new_array[new_start + idx] = self._array[idx]
 
@@ -145,12 +145,8 @@ class DynamicArray:
         start = self._left - self._size_left
         end = self._left + self._size_right
 
-        # print(f'starting at: {start}, ending at: {end + 1}')
-
         for idx in range(start, end - 1):  # go through the position the array is sitting in
             if not found and (self._array[idx] == element):
-
-                # print(self._array[idx])
 
                 found = True
 
@@ -162,7 +158,7 @@ class DynamicArray:
             if found:
                 self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
             
-            self._array[-1] = None
+        self.set_at(-1, None)
 
     def remove_at(self, index: int) -> Any | None:
         """
@@ -170,16 +166,23 @@ class DynamicArray:
         If there is no such element, leave the array unchanged and return None.
         Time complexity for full marks: O(N)
         """
-        if self._array[self.rev_values(index)] == None:
+        if self.get_at(index) == None:
             return 
         else:
-            # print(f'{index}, {self.rev_values(index)}')
             self.set_at(index, None)
+
+            if self.rev_values(index) > self._left:  # dealing with decreasing the size
+               self._size_right -= 1
+            else:  # if on the other side or in middle then reduce known size on that side by 1
+                self._size_left -= 1
 
         end = self._right - self._size_right  # the position of the final element of the array
 
-        for idx in range(index, end + 1):
-            self._array[idx] = self._array[idx + 1]
+        # print(f'index: {self.rev_values(index)}, self: {self}')
+        for idx in range(self.rev_values(index), end - 1):
+                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
+            
+        self.set_at(-1, None)
 
     def is_empty(self) -> bool:
         """
