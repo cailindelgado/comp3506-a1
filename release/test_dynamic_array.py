@@ -1,16 +1,11 @@
-from _pytest.runner import TResult
 import pytest
-from structures.dynamic_array import DynamicArray as da
-
-# create a function for generating a list/array of a certain size and then randomsize the inputs. 
-# for large functions
-
+from structures.dynamic_array import DynamicArray
 
 class TestDynamicArray:
 
     @pytest.fixture
     def dynamic_array(self):
-        return da()
+        return DynamicArray()
 
     def test_init(self, dynamic_array):
         assert dynamic_array._size_left == 0
@@ -79,3 +74,10 @@ class TestDynamicArray:
         dynamic_array.append(1)
         dynamic_array.append(1)
         assert dynamic_array._array == [None, None, None, None, 1, 1, 1, 1]
+
+    def test_sort(self, dynamic_array):
+        dynamic_array.append(1)
+        dynamic_array.append(2)
+        dynamic_array.prepend(3)
+        dynamic_array.prepend(4)
+        assert dynamic_array._array == [1, 2, 3, 4]

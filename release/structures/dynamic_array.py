@@ -5,6 +5,8 @@ Joel Mackenzie and Vladimir Morozov
 """
 
 from typing import Any
+from random import randrange as rr
+import typing_extensions
 
 class DynamicArray:
     def __init__(self) -> None:
@@ -212,10 +214,40 @@ class DynamicArray:
         Sort elements inside _data based on < comparisons.
         Time complexity for full marks: O(NlogN)
         """
-        # Merge sort
-        if self.get_size() <= 1:
+        start = self._left - self._size_left
+        end = self._left + self._size_right
+
+        self.qsort(self._array, start, end)
+        
+    def qsort(self, toSort: Any, start: int, end: int) -> None:
+        """
+        In place quick sort based on Lumoto's partition scheme with a random pivot 
+        """
+        if start >= end:
             return
 
-        middle = self.get_size() // 2
+        # swap a random element to be a pivot with the last element
+        indx = rr(start, end)
+        toSort[end], toSort[indx] = toSort[indx], toSort[end]
 
+        # find a middle by splitting into a partition
+        mid = self.partition(toSort, start, end)
 
+        # recursively run qsort on other parts of array
+        self.qsort(toSort, start, mid - 1)
+        self.qsort(toSort, mid + 1, end)
+        
+
+    def partition(self, part: Any, start: int, end: int) -> int:
+        """
+        Helper function for qsort, which partitions the array
+        into two unsorted sections to be sorted
+        """
+        pivot = part[end]
+        i = start - 1
+        for j in range(start, end - 1):
+            if part[j] >= pivot:
+                i += 1
+                part[i], part[j] = part[j], part[i]
+
+        return i + 1
