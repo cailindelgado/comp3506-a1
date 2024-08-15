@@ -1,1 +1,5 @@
-TALK TO SOMEONE ABOUT THIS ON FRIDAY
+Sources used during this assignment (as far as I can remember):
+Geeks for Geeks: https://www.geeksforgeeks.org/
+w2schools python: https://www.w3schools.com/python/default.asp
+CLRS: https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf
+Course Textbook: https://ia601807.us.archive.org/26/items/data-structures-and-algorithms-in-python-pdfdrive/Data%20Structures%20and%20Algorithms%20in%20Python%20%28%20PDFDrive%20%29.pdf
