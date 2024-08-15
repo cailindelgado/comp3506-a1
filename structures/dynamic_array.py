@@ -6,7 +6,6 @@ Joel Mackenzie and Vladimir Morozov
 
 from typing import Any
 from random import randrange as rr
-import typing_extensions
 
 class DynamicArray:
     def __init__(self) -> None:

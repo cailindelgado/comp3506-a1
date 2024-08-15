@@ -6,9 +6,7 @@ Joel Mackenzie and Vladimir Morozov
 
 # so we can hint Node get_next
 from __future__ import annotations
-
-from typing import Any, reveal_type
-
+from typing import Any
 
 class Node:
     """
