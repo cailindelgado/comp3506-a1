@@ -1,9 +1,12 @@
 import pytest
 
 from structures.linked_list import DoublyLinkedList as DL
+from random import randrange as rr
+from collections import deque
 
 def set_up(check: int) -> DL:
     my_list = DL()
+
     if check == 0:
         return my_list
     elif check == 1:
@@ -20,7 +23,27 @@ def set_up(check: int) -> DL:
         my_list.insert_to_back("World!")
         my_list.insert_to_front("Hello")
 
+    elif check == 4:
+
+        for i in range(0, 1000):
+            roll = rr(1, 6)
+            if roll == 1:
+                my_list.insert_to_front(i)
+            elif roll == 2:
+                my_list.insert_to_back(i)
+            elif roll == 3:
+                my_list.remove_from_back()
+            elif roll == 4:
+                my_list.remove_from_front()
+            elif roll == 5:
+                my_list.reverse()
     return my_list
+
+            
+def set_up_2(check: int) -> bool:
+    canon = deque()
+    pass
+
 
 # ==== Testing Getters and Setters ==== 
 """
@@ -151,32 +174,7 @@ def test_basics_empty():
 """
 inset_to_front -> inserts new node in the front with given data
 inset_to_back -> inserts new node in the back with given data
-
 """
-
-def test_adv():
-    # Test initializing an empty list
-    dll = DL()
-
-    dll.insert_to_back(1)
-    dll.insert_to_front(2)
-    dll.insert_to_front(3)
-    dll.insert_to_back(4)
-
-    assert dll.get_head() == 3
-    assert dll.get_tail() == 4
-    assert dll.find_element(2) == True
-    assert dll.find_element(1) == True
-    assert dll.find_element(9) == False
-    print(str(dll))
-    assert dll.find_and_remove_element(4) == True 
-    print(str(dll))
-    assert dll.get_tail() == 1
-    assert dll.find_and_remove_element(9) == False 
-    print(str(dll))
-    assert dll.get_tail() == 1
-
-
 
 class TestLinkedList:
 

@@ -56,12 +56,8 @@ def main_character(instring: list[int]) -> int:
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
 
-    count = 0
-    for item in instring:  # O(n)
-        count += 1 
-
-    for i in range(count):  
-        for j in range(i + 1, count):
+    for i in range(len(instring)):  
+        for j in range(i + 1, len(instring)):
             if instring[i] == instring[j]:
                 return i
 

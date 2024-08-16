@@ -294,6 +294,5 @@ class DoublyLinkedList:
         Reverses the linked list
         Time complexity for full marks: O(1)
         """
-        # python shorthand for swapping variables is: a,b = b, a
         #flip the flag when reverse is called
         self._reverse = not self._reverse
