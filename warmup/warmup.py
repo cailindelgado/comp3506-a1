@@ -59,7 +59,7 @@ def main_character(instring: list[int]) -> int:
     for i in range(len(instring)):  
         for j in range(i + 1, len(instring)):
             if instring[i] == instring[j]:
-                return i
+                return j
 
     return -1  # O(n^2)
 

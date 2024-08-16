@@ -7,9 +7,10 @@ Joel Mackenzie and Vladimir Morozov
 from typing import Any
 from random import randrange as rr
 
+
 class DynamicArray:
     def __init__(self) -> None:
-        """ 
+        """
         Create an empty array
         """
         self._size_left = 0
@@ -31,15 +32,15 @@ class DynamicArray:
         Create a new section of "storage" to hold the data
         """
         old_start = self._left - self._size_left
-        old_end = self._left + self._size_right 
+        old_end = self._left + self._size_right
 
         self._left *= 2
-        self._right *=  2
+        self._right *= 2
         new_array = [None] * self.get_capacity()
 
         new_start = self._left - self._size_left
-        
-        for idx in range(old_start, old_end):  
+
+        for idx in range(old_start, old_end):
             new_array[new_start + idx - old_start] = self._array[idx]
 
         self._array = new_array
@@ -92,9 +93,9 @@ class DynamicArray:
             self._array[self._left - self._size_left - 1] = element
             self._size_left += 1
         else:
-            self._array[self._left + self._size_right] =  element
+            self._array[self._left + self._size_right] = element
             self._size_right += 1
-        
+
     def prepend(self, element: Any) -> None:
         """
         Add an element to the front of the array.
@@ -104,7 +105,7 @@ class DynamicArray:
             self.__resize()
 
         if self._reverse:
-            self._array[self._left + self._size_right] =  element
+            self._array[self._left + self._size_right] = element
             self._size_right += 1
         else:
             self._array[self._left - self._size_left - 1] = element
@@ -129,11 +130,11 @@ class DynamicArray:
         if not self._reverse and index >= 0:
             out = index + start
 
-        if  not self._reverse and index < 0:
+        if not self._reverse and index < 0:
             out = end + index
 
         if self._reverse and index >= 0:
-            out = end + (-1 * index - 1) 
+            out = end + (-1 * index - 1)
 
         if self._reverse and index < 0:
             out = (-1 * index) - 1 + start
@@ -150,19 +151,24 @@ class DynamicArray:
         start = self._left - self._size_left
         end = self._left + self._size_right
 
-        for idx in range(start, end - 1):  # go through the position the array is sitting in
+        for idx in range(
+            start, end - 1
+        ):  # go through the position the array is sitting in
             if not found and (self._array[idx] == element):
 
                 found = True
 
                 if idx > self._left:  # dealing with decreasing the size
-                   self._size_right -= 1
+                    self._size_right -= 1
                 else:  # if on the other side or in middle then reduce known size on that side by 1
                     self._size_left -= 1
 
             if found:
-                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
-            
+                self._array[idx], self._array[idx + 1] = (
+                    self._array[idx + 1],
+                    self._array[idx],
+                )
+
         self.set_at(-1, None)
 
     def remove_at(self, index: int) -> Any | None:
@@ -172,22 +178,30 @@ class DynamicArray:
         Time complexity for full marks: O(N)
         """
         if self.get_at(index) == None:
-            return 
+            return
 
         self.set_at(index, None)
 
         # update size
-        if self.rev_values(index) >= self._left:  # if on right half 
+        if self.rev_values(index) >= self._left:  # if on right half
             self._size_right -= 1
 
-            for idx in range(self.rev_values(index), self.get_capacity() - 1):  # push in from right
-                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
-        else:  
+            for idx in range(
+                self.rev_values(index), self.get_capacity() - 1
+            ):  # push in from right
+                self._array[idx], self._array[idx + 1] = (
+                    self._array[idx + 1],
+                    self._array[idx],
+                )
+        else:
             self._size_left -= 1
 
             for idx in range(1, self.rev_values(index), -1):  # push in from left
-                self._array[idx], self._array[idx - 1] = self._array[idx - 1], self._array[idx]
-         
+                self._array[idx], self._array[idx - 1] = (
+                    self._array[idx - 1],
+                    self._array[idx],
+                )
+
     def is_empty(self) -> bool:
         """
         Boolean helper to tell us if the structure is empty or not
@@ -225,10 +239,10 @@ class DynamicArray:
         end = self._left + self._size_right
 
         self.qsort(self._array, start, end - 1)
-        
+
     def qsort(self, toSort: Any, start: int, end: int) -> None:
         """
-        In place quick sort based on Lumoto's partition scheme with a random pivot 
+        In place quick sort based on Lumoto's partition scheme with a random pivot
         """
         if start >= end:
             return
@@ -256,6 +270,9 @@ class DynamicArray:
                 pivot_pos += 1
                 part[pivot_pos], part[j] = part[j], part[pivot_pos]
 
-        part[pivot_pos + 1], part[end] = part[end], part[pivot_pos + 1]  # put the pivot into place
+        part[pivot_pos + 1], part[end] = (
+            part[end],
+            part[pivot_pos + 1],
+        )  # put the pivot into place
 
         return pivot_pos + 1
