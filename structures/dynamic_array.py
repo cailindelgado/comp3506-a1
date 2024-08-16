@@ -60,7 +60,7 @@ class DynamicArray:
         Same as get_at.
         Allows to use square brackets to index elements.
         """
-        return self.get_at(self.rev_values(index))
+        return self.get_at(index)
 
     def set_at(self, index: int, element: Any) -> None:
         """
