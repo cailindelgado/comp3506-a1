@@ -28,7 +28,6 @@ There will be hidden tests in each category that will be published only after th
 You may wish to import your data structures to help you with some of the
 problems. Or maybe not. We did it for you just in case.
 """
-import typing_extensions
 from structures.bit_vector import BitVector
 from structures.dynamic_array import DynamicArray
 from structures.linked_list import DoublyLinkedList, Node
@@ -56,6 +55,7 @@ def main_character(instring: list[int]) -> int:
     main_character([7, 1, 2, 7]) == 3
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
+
     count = 0
     for item in instring:  # O(n)
         count += 1 
@@ -66,6 +66,8 @@ def main_character(instring: list[int]) -> int:
                 return i
 
     return -1  # O(n^2)
+
+    #bit vector problem to simplify it
 
 
 def missing_odds(inputs: list[int]) -> int:
@@ -111,7 +113,7 @@ def missing_odds(inputs: list[int]) -> int:
             if number % 2 != 0:
                 out += number
 
-    return out  # O(nlogn) (if sort is mergesort)
+    return out  # O(nlogn)
 
 
 def k_cool(k: int, n: int) -> int:
@@ -180,7 +182,6 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     The same happens on the next move.
     So, nobody picks any numbers to increase their score, which results in a Tie with both players having scores of 0.
     """
-
     # YOUR CODE GOES HERE
     pass
 

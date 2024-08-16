@@ -40,7 +40,7 @@ class DynamicArray:
         new_start = self._left - self._size_left
         
         for idx in range(old_start, old_end):  
-            new_array[new_start + idx - old_start + 1] = self._array[idx]
+            new_array[new_start + idx - old_start] = self._array[idx]
 
         self._array = new_array
 
@@ -88,8 +88,12 @@ class DynamicArray:
         if self._right == self._size_right:
             self.__resize()
 
-        self._size_right += 1
-        self.set_at(self._right - self._size_right - 1, element)
+        if self._reverse:
+            self._array[self._left - self._size_left - 1] = element
+            self._size_left += 1
+        else:
+            self._array[self._left + self._size_right] =  element
+            self._size_right += 1
         
     def prepend(self, element: Any) -> None:
         """
@@ -99,8 +103,12 @@ class DynamicArray:
         if self._left == self._size_left:
             self.__resize()
 
-        self._size_left += 1
-        self.set_at(self._left - self._size_left - 1, element)
+        if self._reverse:
+            self._array[self._left + self._size_right] =  element
+            self._size_right += 1
+        else:
+            self._array[self._left - self._size_left - 1] = element
+            self._size_left += 1
 
     def reverse(self) -> None:
         """
@@ -114,21 +122,21 @@ class DynamicArray:
         Handles reversing the logic of the indexes of the array
         """
         # new implementation
-        leftovers_l = self._left - self._size_left
-        leftovers_r = self._right - self._size_right
-
+        start = self._left - self._size_left
+        end = self._left + self._size_right
         out = index
-        if index >= 0 and not self._reverse:
-            out = index + (leftovers_l)
 
-        if index < 0 and not self._reverse:
-            out = index - (leftovers_r)
+        if not self._reverse and index >= 0:
+            out = index + start
+
+        if  not self._reverse and index < 0:
+            out = end + index
 
         if self._reverse and index >= 0:
-            out = (-1 * index + 1) - (leftovers_r)
+            out = end + (-1 * index - 1) 
 
         if self._reverse and index < 0:
-            out = (-1 * index + 1) + (leftovers_l)
+            out = (-1 * index) - 1 + start
 
         return out
 
@@ -216,7 +224,7 @@ class DynamicArray:
         start = self._left - self._size_left
         end = self._left + self._size_right
 
-        self.qsort(self._array, start, end)
+        self.qsort(self._array, start, end - 1)
         
     def qsort(self, toSort: Any, start: int, end: int) -> None:
         """
@@ -225,28 +233,29 @@ class DynamicArray:
         if start >= end:
             return
 
-        # swap a random element to be a pivot with the last element
-        indx = rr(start, end)
-        toSort[end], toSort[indx] = toSort[indx], toSort[end]
-
         # find a middle by splitting into a partition
         mid = self.partition(toSort, start, end)
 
         # recursively run qsort on other parts of array
         self.qsort(toSort, start, mid - 1)
         self.qsort(toSort, mid + 1, end)
-        
 
     def partition(self, part: Any, start: int, end: int) -> int:
         """
         Helper function for qsort, which partitions the array
         into two unsorted sections to be sorted
         """
-        pivot = part[end]
-        i = start - 1
-        for j in range(start, end - 1):
-            if part[j] >= pivot:
-                i += 1
-                part[i], part[j] = part[j], part[i]
+        # swap a random element to be a pivot with the last element
+        indx = rr(start, end + 1)
+        part[end], part[indx] = part[indx], part[end]
 
-        return i + 1
+        pivot = part[end]
+        pivot_pos = start - 1
+        for j in range(start, end):  # [start, end - 1)
+            if part[j] <= pivot:
+                pivot_pos += 1
+                part[pivot_pos], part[j] = part[j], part[pivot_pos]
+
+        part[pivot_pos + 1], part[end] = part[end], part[pivot_pos + 1]  # put the pivot into place
+
+        return pivot_pos + 1
