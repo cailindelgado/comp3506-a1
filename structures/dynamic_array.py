@@ -233,29 +233,29 @@ class DynamicArray:
         if start >= end:
             return
 
-        # swap a random element to be a pivot with the last element
-        indx = rr(start, end + 1)
-        print(f'indx: {indx}, start: {start}, end: {end}')
-        toSort[end], toSort[indx] = toSort[indx], toSort[end]
-
         # find a middle by splitting into a partition
         mid = self.partition(toSort, start, end)
 
         # recursively run qsort on other parts of array
         self.qsort(toSort, start, mid - 1)
         self.qsort(toSort, mid + 1, end)
-        
 
     def partition(self, part: Any, start: int, end: int) -> int:
         """
         Helper function for qsort, which partitions the array
         into two unsorted sections to be sorted
         """
+        # swap a random element to be a pivot with the last element
+        indx = rr(start, end + 1)
+        part[end], part[indx] = part[indx], part[end]
+
         pivot = part[end]
         pivot_pos = start - 1
         for j in range(start, end):  # [start, end - 1)
             if part[j] <= pivot:
                 pivot_pos += 1
                 part[pivot_pos], part[j] = part[j], part[pivot_pos]
+
+        part[pivot_pos + 1], part[end] = part[end], part[pivot_pos + 1]  # put the pivot into place
 
         return pivot_pos + 1
