@@ -110,7 +110,7 @@ class BitVector:
         if state is 0, set the bit to 0, otherwise set the bit to 1.
         Time complexity for full marks: O(1*)
         """
-        if self._data.get_size() == self._
+        # if self._data.get_size() == self._
         pass
 
     def reverse(self) -> None:
@@ -148,4 +148,4 @@ class BitVector:
         Return the number of *bits* in the list
         Time complexity for full marks: O(1)
         """
-        pass
+        return 0
