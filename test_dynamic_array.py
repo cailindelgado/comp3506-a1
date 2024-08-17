@@ -1,6 +1,3 @@
-
-# compre with the built in python stuff
-
 from random import randrange as rand
 import pytest
 from structures.dynamic_array import DynamicArray as da
@@ -43,13 +40,14 @@ class TestDynamicArrayBasics:
     def test_remove(self, dynamic_array):
         dynamic_array.append(1)
         dynamic_array.append(2)
+        dynamic_array.append(3)
         dynamic_array.remove(1)
-        assert dynamic_array._array == [None, None, 2, None]
+        assert dynamic_array._array == [None, None, None, None, 2, 3, None, None]
 
     def test_remove_at(self, dynamic_array):
         dynamic_array.append(1)
         dynamic_array.append(2)
-        dynamic_array.remove_at(0)
+        assert dynamic_array.remove_at(0) == 1
         assert dynamic_array._array == [None, None, 2, None]
 
     def test_is_empty(self, dynamic_array):
@@ -107,7 +105,6 @@ class TestdaAdv:
         return da()
 
     def populateBasic(self, A: list[int] | da, amount: int, case: int) -> None:
-
         for i in range(0, amount + 1):
             if case == 1:
                 self.method(A, 0, i)  # append
@@ -119,9 +116,7 @@ class TestdaAdv:
 
     def populateAdv(self, A: list[int] | da, amount: int) -> None:
         for i in range(0,amount + 1):  # range(a, b) -> [a, b)
-            roll = rand(0, 6)
-
-            self.method(A, roll, i)
+            self.method(A, rand(0, 6), i)
 
     def method(self, lst: list[int] | da, roll: int, value: int) -> None:
         if isinstance(lst, list):
@@ -148,33 +143,13 @@ class TestdaAdv:
                 lst.remove_at(rand(0, lst.get_size()))
 
 
-    @pytest.mark.skip(reason="Fixing")
-    def test_get_at(self, dynamic_array):
-        self.populateAdv(dynamic_array, 15)
-        assert dynamic_array.get_at(0) == 0
-        assert dynamic_array.get_at(4) == 4
-        assert dynamic_array.get_at(8) == 8 
-        assert dynamic_array.get_at(14) == 14
+    def test_remove_at(self, dynamic_array):
+        for i in range(0, 100):
+            dynamic_array.append(i)
 
-    @pytest.mark.skip(reason="Fixing")
-    def test_popn(self, dynamic_array):
-        canon = []
-
-        self.populateAdv(dynamic_array, 100)
-        self.populateAdv(canon, 100)
-
-        assert canon 
-
-    def test_popn1(self, dynamic_array):
-        ar = []
-        self.populateBasic(ar, 42, 1)
-        for item in ar:
-            dynamic_array.append(item)
-
-        dynamic_array.reverse()
-        for i in range(0, dynamic_array.get_size()):
-            print(dynamic_array[i])
-
-        assert 1 == 2
-
+        # print(dynamic_array)
+        print(dynamic_array[90])
+        assert dynamic_array.get_at(90) == 90
+        assert dynamic_array.remove_at(90) == 90
+        assert dynamic_array.get_at(90) == 91
 

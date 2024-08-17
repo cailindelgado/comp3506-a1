@@ -60,7 +60,6 @@ class DoublyLinkedList:
     """
 
     def __init__(self) -> None:
-        # You probably need to track some data here...
         self._size = 0
         self._head = None
         self._tail = None

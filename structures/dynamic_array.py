@@ -25,7 +25,12 @@ class DynamicArray:
         A helper that allows you to print a DynamicArray type
         via the str() method.
         """
-        return str(self._array)
+        # return str(self._array)
+        out = "["
+        for i in range(self._left - self._size_left, self._left + self._size_right):
+            out += f'{self._array[i]} '
+                
+        return out
 
     def __resize(self) -> None:
         """
@@ -51,10 +56,8 @@ class DynamicArray:
         Return None if index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if not ((-1 * self.get_size()) <= index < self.get_size()):
-            return
-
-        return self._array[self.rev_values(index)]
+        if (-1 * self.get_size()) <= index < self.get_size():
+            return self._array[self.rev_values(index)]
 
     def __getitem__(self, index: int) -> Any | None:
         """
@@ -69,10 +72,8 @@ class DynamicArray:
         Do not modify the list if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if not ((-1 * self.get_size()) <= index < self.get_size()):
-            return
-
-        self._array[self.rev_values(index)] = element
+        if (-1 * self.get_size()) <= index < self.get_size():
+            self._array[self.rev_values(index)] = element
 
     def __setitem__(self, index: int, element: Any) -> None:
         """
@@ -151,9 +152,7 @@ class DynamicArray:
         start = self._left - self._size_left
         end = self._left + self._size_right
 
-        for idx in range(
-            start, end - 1
-        ):  # go through the position the array is sitting in
+        for idx in range(start, end - 1):  # go through the position the array is sitting in
             if not found and (self._array[idx] == element):
 
                 found = True
@@ -164,20 +163,19 @@ class DynamicArray:
                     self._size_left -= 1
 
             if found:
-                self._array[idx], self._array[idx + 1] = (
-                    self._array[idx + 1],
-                    self._array[idx],
-                )
+                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
 
         self.set_at(-1, None)
 
     def remove_at(self, index: int) -> Any | None:
         """
         Remove the element at the given index from the array and return the removed element.
-        If there is no such element, leave the array unchanged and return None.  # does if there is no such elem mean that if None?
+        If there is no such element, leave the array unchanged and return None. 
         Time complexity for full marks: O(N)
         """
-        if self.get_at(index) == None:
+        out = self.get_at(index)        
+
+        if out == None:
             return
 
         self.set_at(index, None)
@@ -186,21 +184,15 @@ class DynamicArray:
         if self.rev_values(index) >= self._left:  # if on right half
             self._size_right -= 1
 
-            for idx in range(
-                self.rev_values(index), self.get_capacity() - 1
-            ):  # push in from right
-                self._array[idx], self._array[idx + 1] = (
-                    self._array[idx + 1],
-                    self._array[idx],
-                )
+            for idx in range(self.rev_values(index), self.get_capacity() - 1): # push in from right
+                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
         else:
             self._size_left -= 1
 
             for idx in range(1, self.rev_values(index), -1):  # push in from left
-                self._array[idx], self._array[idx - 1] = (
-                    self._array[idx - 1],
-                    self._array[idx],
-                )
+                self._array[idx], self._array[idx - 1] = self._array[idx - 1], self._array[idx]
+
+        return out
 
     def is_empty(self) -> bool:
         """
@@ -222,6 +214,13 @@ class DynamicArray:
         Time complexity for full marks: O(1)
         """
         return self._size_left + self._size_right
+
+    def get_part(self, side: bool) -> int:
+        """
+        Return the number of elements on the left if @side@ true
+        else return the number of elements on the right
+        """
+        return self._size_left if side else self._size_right
 
     def get_capacity(self) -> int:
         """
@@ -270,9 +269,6 @@ class DynamicArray:
                 pivot_pos += 1
                 part[pivot_pos], part[j] = part[j], part[pivot_pos]
 
-        part[pivot_pos + 1], part[end] = (
-            part[end],
-            part[pivot_pos + 1],
-        )  # put the pivot into place
+        part[pivot_pos + 1], part[end] = part[end], part[pivot_pos + 1]  # put the pivot into place
 
         return pivot_pos + 1

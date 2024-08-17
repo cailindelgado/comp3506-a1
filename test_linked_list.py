@@ -39,12 +39,6 @@ def set_up(check: int) -> DL:
                 my_list.reverse()
     return my_list
 
-            
-def set_up_2(check: int) -> bool:
-    canon = deque()
-    pass
-
-
 # ==== Testing Getters and Setters ==== 
 """
 get_size -> self._size
@@ -255,5 +249,9 @@ class TestLinkedList:
         assert linked_list.get_head() == 1
         assert linked_list.get_tail() == 3
 
+    @pytest.mark.skip(reason= "create a test to find out what is wrong with my reverse")
+    def test_rev(self, linked_list):
+        pass
+        
 if __name__ == '__main__':
     pytest.main()
