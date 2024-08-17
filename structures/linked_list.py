@@ -8,6 +8,7 @@ Joel Mackenzie and Vladimir Morozov
 from __future__ import annotations
 from typing import Any
 
+
 class Node:
     """
     A simple type to hold data and a next pointer
@@ -55,11 +56,10 @@ class DoublyLinkedList:
     Note that any time you see `Any` in the type annotations,
     this refers to the "data" stored inside a Node.
 
-    [V3: Note that this API was changed in the V3 spec] 
+    [V3: Note that this API was changed in the V3 spec]
     """
 
     def __init__(self) -> None:
-        # You probably need to track some data here...
         self._size = 0
         self._head = None
         self._tail = None
@@ -75,9 +75,9 @@ class DoublyLinkedList:
 
         while current is not None:
             if current.get_next(self._reverse) == None:
-                out += f'{current.get_data()}'
+                out += f"{current.get_data()}"
             else:
-                out += f'{current.get_data()}, '
+                out += f"{current.get_data()}, "
 
             current = current.get_next(self._reverse)
         return out + ">"
@@ -116,7 +116,7 @@ class DoublyLinkedList:
         if not self._reverse:
             if self._head:
                 self._head.set_data(data)
-        else: 
+        else:
             if self._tail:
                 return self._tail.set_data(data)
 
@@ -198,7 +198,7 @@ class DoublyLinkedList:
         Remove the front node, and return the data it holds.
         Time complexity for full marks: O(1)
         """
-        out = self.get_head() 
+        out = self.get_head()
 
         # what happens when only 1 item in list
         if self.get_size() == 1:
@@ -248,7 +248,7 @@ class DoublyLinkedList:
                 if current.get_data() == elem:
                     found = True
                     break
-    
+
                 current = current.get_next(self._reverse)
 
         return found
@@ -294,5 +294,5 @@ class DoublyLinkedList:
         Reverses the linked list
         Time complexity for full marks: O(1)
         """
-        #flip the flag when reverse is called
+        # flip the flag when reverse is called
         self._reverse = not self._reverse
