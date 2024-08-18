@@ -33,7 +33,6 @@ class BitVector:
         """
         return str(self._data)
 
-
     def __resize(self) -> None:
         pass
 
