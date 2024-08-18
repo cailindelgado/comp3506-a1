@@ -100,8 +100,11 @@ class BitVector:
         if state is 0, set the bit to 0, otherwise set the bit to 1.
         Time complexity for full marks: O(1*)
         """
-        if self._MSB//64 == self._data.get_size():
+        if self._data.get_part(True) == self._MSB // self.BITS_PER_ELEMENT:
             self._data.append(0)
+
+        self.__setitem__(self._MSB, state)
+        self._MSB += 1
 
     def prepend(self, state: Any) -> None:
         """
@@ -110,8 +113,13 @@ class BitVector:
         if state is 0, set the bit to 0, otherwise set the bit to 1.
         Time complexity for full marks: O(1*)
         """
-        # if self._data.get_size() == self._
-        pass
+        if self._LSB == -64:
+            self._data.prepend(2**63)
+            self._MSB += 64
+        else:
+            self.__setitem__(64 + self._LSB, state)
+            self._LSB -= 1
+            
 
     def reverse(self) -> None:
         """

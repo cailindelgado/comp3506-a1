@@ -19,6 +19,7 @@ class DynamicArray:
         self._right = 2
         self._array = [None] * (self._left + self._right)
         self._reverse = False
+        self._update = True 
 
     def __str__(self) -> str:
         """
@@ -39,8 +40,11 @@ class DynamicArray:
         old_start = self._left - self._size_left
         old_end = self._left + self._size_right
 
-        self._left *= 2
-        self._right *= 2
+        if self._update:  # if true, then increase size on left
+            self._left *= 2
+        else:
+            self._right *= 2
+
         new_array = [None] * self.get_capacity()
 
         new_start = self._left - self._size_left
@@ -88,6 +92,7 @@ class DynamicArray:
         Time complexity for full marks: O(1*) (* means amortized)
         """
         if self._right == self._size_right:
+            self._update = False
             self.__resize()
 
         if self._reverse:
@@ -103,6 +108,7 @@ class DynamicArray:
         Time complexity for full marks: O(1*)
         """
         if self._left == self._size_left:
+            self._update = True
             self.__resize()
 
         if self._reverse:
@@ -264,7 +270,7 @@ class DynamicArray:
 
         pivot = part[end]
         pivot_pos = start - 1
-        for j in range(start, end):  # [start, end - 1)
+        for j in range(start, end):  # [start, end - 1]
             if part[j] <= pivot:
                 pivot_pos += 1
                 part[pivot_pos], part[j] = part[j], part[pivot_pos]
