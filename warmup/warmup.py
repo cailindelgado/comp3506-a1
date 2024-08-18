@@ -30,7 +30,7 @@ problems. Or maybe not. We did it for you just in case.
 """
 from structures.bit_vector import BitVector
 from structures.dynamic_array import DynamicArray
-from structures.linked_list import DoublyLinkedList, Node
+from structures.linked_list import DoublyLinkedList
 
 
 def main_character(instring: list[int]) -> int:
@@ -55,15 +55,14 @@ def main_character(instring: list[int]) -> int:
     main_character([7, 1, 2, 7]) == 3
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
-
-    for i in range(len(instring)):  
+    for i in range(len(instring)):
         for j in range(i + 1, len(instring)):
             if instring[i] == instring[j]:
-                return i
+                return j
 
     return -1  # O(n^2)
 
-    #bit vector problem to simplify it
+    # bit vector problem to simplify it
 
 
 def missing_odds(inputs: list[int]) -> int:
@@ -99,14 +98,14 @@ def missing_odds(inputs: list[int]) -> int:
 
     # sort da
     da.sort()
-    
+
     out = 0
     start = da[0]
     end = da[-1]
 
     if isinstance(start, int) and isinstance(end, int):  # to keep lsp quiet
         for number in range(start, end + 1):  # range(a, b) gives [a, b)
-            if number % 2 != 0:
+            if number % 2 != 0 and 1:
                 out += number
 
     return out  # O(nlogn)
@@ -212,7 +211,7 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     radius = 0
     da = DynamicArray()
 
-    for item in poles:  # O(n) 
+    for item in poles:  # O(n)
         da.append(item)
 
     da.sort()  # O(nlogn)
