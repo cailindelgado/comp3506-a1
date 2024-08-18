@@ -42,7 +42,7 @@ class TestDynamicArrayBasics:
         dynamic_array.append(2)
         dynamic_array.append(3)
         dynamic_array.remove(1)
-        assert dynamic_array._array == [None, None, None, None, 2, 3, None, None]
+        assert dynamic_array._array == [None, None, 2, 3, None, None]
 
     def test_remove_at(self, dynamic_array):
         dynamic_array.append(1)
@@ -76,7 +76,7 @@ class TestDynamicArrayBasics:
         dynamic_array.append(1)
         dynamic_array.append(1)
         dynamic_array.append(1)
-        assert dynamic_array._array == [None, None, None, None, 1, 1, 1, 1]
+        assert dynamic_array._array == [None, None, 1, 1, 1, 1]
 
     def test_reverse(self, dynamic_array):
         dynamic_array.append(1)
