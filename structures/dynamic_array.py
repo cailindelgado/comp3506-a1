@@ -26,12 +26,12 @@ class DynamicArray:
         A helper that allows you to print a DynamicArray type
         via the str() method.
         """
-        # return str(self._array)
-        out = "["
-        for i in range(self._left - self._size_left, self._left + self._size_right):
-            out += f'{self._array[i]} '
-                
-        return out
+        return str(self._array)
+        # out = "[ "
+        # for i in range(self._left - self._size_left, self._left + self._size_right):
+        #     out += f"{self._array[i]} "
+        #
+        # return out + "]"
 
     def __resize(self) -> None:
         """
@@ -49,7 +49,7 @@ class DynamicArray:
 
         new_start = self._left - self._size_left
 
-        for idx in range(old_start, old_end):
+        for idx in range(old_start, old_end):  # [old_start, old_end) == [os, oe]
             new_array[new_start + idx - old_start] = self._array[idx]
 
         self._array = new_array
@@ -91,14 +91,18 @@ class DynamicArray:
         Add an element to the back of the array.
         Time complexity for full marks: O(1*) (* means amortized)
         """
-        if self._right == self._size_right:
-            self._update = False
-            self.__resize()
+        if self._reverse:  # if reversed do a prepend (ran out of time for big brian sol)
+            if self._left == self._size_left:
+                self._update = True
+                self.__resize()
 
-        if self._reverse:
             self._array[self._left - self._size_left - 1] = element
             self._size_left += 1
         else:
+            if self._right == self._size_right:
+                self._update = False
+                self.__resize()
+
             self._array[self._left + self._size_right] = element
             self._size_right += 1
 
@@ -107,14 +111,18 @@ class DynamicArray:
         Add an element to the front of the array.
         Time complexity for full marks: O(1*)
         """
-        if self._left == self._size_left:
-            self._update = True
-            self.__resize()
+        if self._reverse:  # if reversed do an append
+            if self._right == self._size_right:
+                self._update = False
+                self.__resize()
 
-        if self._reverse:
             self._array[self._left + self._size_right] = element
             self._size_right += 1
         else:
+            if self._left == self._size_left:
+                self._update = True
+                self.__resize()
+
             self._array[self._left - self._size_left - 1] = element
             self._size_left += 1
 
@@ -154,24 +162,27 @@ class DynamicArray:
         If there is no such element, leave the array unchanged.
         Time complexity for full marks: O(N)
         """
-        found = False
-        start = self._left - self._size_left
-        end = self._left + self._size_right
+        found = False 
+        fidx = 0
 
-        for idx in range(start, end - 1):  # go through the position the array is sitting in
-            if not found and (self._array[idx] == element):
-
+        for idx in range(0, self.get_size()):
+            if (self.get_at(idx) == element) and not found:
+                self.set_at(idx, None)
                 found = True
+                fidx = idx
+                break
 
-                if idx > self._left:  # dealing with decreasing the size
-                    self._size_right -= 1
-                else:  # if on the other side or in middle then reduce known size on that side by 1
-                    self._size_left -= 1
+        if found:
+            for idx in range(fidx, self.get_size() - 1):
+                indx_A = self.rev_values(idx)
+                indx_B = self.rev_values(idx + 1)
 
-            if found:
-                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
+                self._array[indx_A], self._array[indx_B] = self._array[indx_B], self._array[indx_A]
 
-        self.set_at(-1, None)
+            if self._reverse:
+                self._size_left -= 1
+            else:
+                self._size_right -= 1
 
     def remove_at(self, index: int) -> Any | None:
         """
@@ -179,7 +190,7 @@ class DynamicArray:
         If there is no such element, leave the array unchanged and return None. 
         Time complexity for full marks: O(N)
         """
-        out = self.get_at(index)        
+        out = self.get_at(index)
 
         if out == None:
             return
@@ -188,15 +199,25 @@ class DynamicArray:
 
         # update size
         if self.rev_values(index) >= self._left:  # if on right half
+            for idx in range(self.rev_values(index), self.get_size() - 1): # push in from right
+                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
+
+            if self.rev_values(index) - self.get_size() <= 1:
+                a = self.rev_values(index)
+                self._array[a], self._array[a + 1] = self._array[a + 1], self._array[a]
+
             self._size_right -= 1
 
-            for idx in range(self.rev_values(index), self.get_capacity() - 1): # push in from right
-                self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
         else:
-            self._size_left -= 1
-
-            for idx in range(1, self.rev_values(index), -1):  # push in from left
+            for idx in range(self.rev_values(index), 1, -1):
                 self._array[idx], self._array[idx - 1] = self._array[idx - 1], self._array[idx]
+
+            if self.rev_values(index) - self._size_left <= 1:
+                a = self.rev_values(index)
+                self._array[a], self._array[a - 1] = self._array[a - 1], self._array[a]
+
+
+            self._size_left -= 1
 
         return out
 
@@ -221,13 +242,6 @@ class DynamicArray:
         """
         return self._size_left + self._size_right
 
-    def get_part(self, side: bool) -> int:
-        """
-        Return the number of elements on the left if @side@ true
-        else return the number of elements on the right
-        """
-        return self._size_left if side else self._size_right
-
     def get_capacity(self) -> int:
         """
         Return the total capacity (the number of slots) of the list
@@ -243,7 +257,12 @@ class DynamicArray:
         start = self._left - self._size_left
         end = self._left + self._size_right
 
+        # array_parity = self._reverse
+        # self._reverse = False
+
         self.qsort(self._array, start, end - 1)
+
+        # self._reverse = array_parity
 
     def qsort(self, toSort: Any, start: int, end: int) -> None:
         """

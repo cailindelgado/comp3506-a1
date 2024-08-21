@@ -33,7 +33,6 @@ class BitVector:
         """
         return str(self._data)
 
-
     def __resize(self) -> None:
         pass
 
@@ -46,7 +45,9 @@ class BitVector:
         if 0 <= (index//self.BITS_PER_ELEMENT) < self._data.get_size():
             out = self._data[index//self.BITS_PER_ELEMENT]
             if out is not None:
-                out &= 1>>(index % 64)
+
+                out &= 1>>(index % self.BITS_PER_ELEMENT)
+
                 return 1 if out != 0 else out
 
     def __getitem__(self, index: int) -> int | None:
@@ -64,8 +65,15 @@ class BitVector:
         """
         if 0 <= (index//self.BITS_PER_ELEMENT) < self._data.get_size():
             out = self._data[index//self.BITS_PER_ELEMENT]
+
             if out is not None:
-                out |= 1>>(index % 64)
+                # print(f'Before: {out}')
+                out = out | (1 << (index % 64))
+                print(f'shifting: {index % 64}')
+                print((1 << (index % 64)))
+
+                # out |= 1 >> (index % 64)
+                # print(f'After: {out}')
                 self._data[index//self.BITS_PER_ELEMENT] = out
 
     def unset_at(self, index: int) -> None:
@@ -76,8 +84,9 @@ class BitVector:
         """
         if 0 <= (index//self.BITS_PER_ELEMENT) < self._data.get_size():
             out = self._data[index//self.BITS_PER_ELEMENT]
+
             if out is not None:
-                out &= ~ (1>>(index % 64))
+                out &= ~(1>>(index % self.BITS_PER_ELEMENT))
                 self._data[index//self.BITS_PER_ELEMENT] = out
 
     def __setitem__(self, index: int, state: int) -> None:
@@ -100,7 +109,7 @@ class BitVector:
         if state is 0, set the bit to 0, otherwise set the bit to 1.
         Time complexity for full marks: O(1*)
         """
-        if self._data.get_part(True) == self._MSB // self.BITS_PER_ELEMENT:
+        if self._MSB % 64 == 0:
             self._data.append(0)
 
         self.__setitem__(self._MSB, state)
@@ -113,9 +122,11 @@ class BitVector:
         if state is 0, set the bit to 0, otherwise set the bit to 1.
         Time complexity for full marks: O(1*)
         """
-        if self._LSB == -64:
-            self._data.prepend(2**63)
+        if self._LSB > -64:
+            self._data.prepend(0)
+            self.__setitem__(64 + self._LSB, state)
             self._MSB += 64
+            self._LSB = 0
         else:
             self.__setitem__(64 + self._LSB, state)
             self._LSB -= 1
