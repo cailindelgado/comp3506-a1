@@ -26,7 +26,7 @@ class KmerStore:
     """
 
     def __init__(self, k: int) -> None:
-        pass
+        self._data = DynamicArray()
 
     def read(self, infile: str) -> None:
         """

@@ -177,9 +177,22 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     The same happens on the next move.
     So, nobody picks any numbers to increase their score, which results in a Tie with both players having scores of 0.
     """
-    # YOUR CODE GOES HERE
-    pass
+    Alice = 0
+    Bob = 0
 
+    evens = DynamicArray()
+    odds = DynamicArray()
+    
+    for number in numbers:
+        if number % 2 == 0:
+            evens.append(number)
+        else:
+            odds.append(number)
+
+    evens.sort()
+    odds.sort()
+
+    return ("Alice", Alice) if Alice > Bob else ("Bob", Bob) if Bob > Alice else ("Tie", Bob)
 
 def road_illumination(road_length: int, poles: list[int]) -> float:
     """
@@ -210,20 +223,34 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     """
     radius = 0
     da = DynamicArray()
+    diffs = DynamicArray() 
 
     for item in poles:  # O(n)
         da.append(item)
 
     da.sort()  # O(nlogn)
 
-    lmp = da[0]
-    rmp = da[-1]  # rmp = right most pole
+    s = da[0]
+    e = da[-1]
 
-    if isinstance(lmp, int) and isinstance(rmp, int):
-        while lmp - radius > 0:
-            radius += 1
+    if isinstance(s, int) and isinstance(e, int):
+        lmr = s
+        rmr = road_length - e  
 
-        while rmp + radius < 0:
-            radius += 1
+        diffs.append(rmr)
+        diffs.append(lmr)
 
-    return radius  # O(nlogn)
+    for idx in range(da.get_size() - 1):  # O(n)
+        s = da[idx + 1]
+        e = da[idx]
+
+        if isinstance(s, int) and isinstance(e, int):
+            diffs.append((s - e)/ 2)
+
+    diffs.sort()  # O(nlogn @ avg)
+
+    s = diffs[-1]
+    if isinstance(s, float):
+        return s  # O(nlogn)
+    else:
+        return radius
