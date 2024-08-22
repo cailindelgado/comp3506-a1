@@ -137,14 +137,14 @@ class BitVector:
         Reverse the bit-vector.
         Time complexity for full marks: O(1)
         """
-        pass
+        self._reverse = not self._reverse
 
     def flip_all_bits(self) -> None:
         """
         Flip all bits in the vector.
         Time complexity for full marks: O(1)
         """
-        pass
+        self._flip = not self._flip
 
     def shift(self, dist: int) -> None:
         """
