@@ -65,7 +65,6 @@ def main_character(instring: list[int]) -> int:
 
     # bit vector problem to simplify it
 
-
 def missing_odds(inputs: list[int]) -> int:
     """
     @inputs@ is an unordered array of distinct integers.
@@ -91,26 +90,25 @@ def missing_odds(inputs: list[int]) -> int:
     missing_odds([4, 1]) == 3
     missing_odds([4, 1, 8, 5]) == 10    # 3 and 7 are missing
     """
-    # put everything into the Dynamic array
-    da = DynamicArray()
-
-    for item in inputs:
-        da.append(item)
-
-    # sort da
-    da.sort()
-
     out = 0
-    start = da[0]
-    end = da[-1]
+    new = [-1] * 2 # keeps track of the [smallest, largest] elements
+    new[0] = 0
+    new[1] = 0
 
-    if isinstance(start, int) and isinstance(end, int):  # to keep lsp quiet
-        for number in range(start, end + 1):  # range(a, b) gives [a, b)
-            if number % 2 != 0 and 1:
-                out += number
+    for idx, val in enumerate(inputs):
+        if val % 2 == 1:
+            out -= val
+
+        if val < inputs[new[0]]:  # new at 0 is smallest
+            new[0] = idx
+        elif val > inputs[new[1]]:  # new at 1 is largest
+            new[1] = idx
+
+    for num in range(inputs[new[0]], inputs[new[1]] + 1):
+        if num % 2 == 1:
+            out += num
 
     return out  # O(nlogn)
-
 
 def k_cool(k: int, n: int) -> int:
     """
@@ -137,19 +135,20 @@ def k_cool(k: int, n: int) -> int:
     k_cool(128, 5000) == 9826529652304384 # The actual result is larger than 10^16 + 61,
                                           # so k_cool returns the remainder of division by 10^16 + 61
     """
-
     MODULUS = 10**16 + 61
     
+    # fix implementation look at the notes
     if n == 0:
-        return 0 % MODULUS
+        return 0
 
+    aleph = lg(n)
 
-    first_kc_pow = lg(n) // 1
+    if aleph // 1 == aleph:
+        return k**aleph % MODULUS
 
-    # YOUR CODE GOES HERE
-    answer = 0  # please update with the real answer... :-)
-    return answer % MODULUS
+    print(f'n: {n}, aleph: {aleph // 1}, new n: {(aleph // 1) - 1}')
 
+    return (k**int(aleph // 1) % MODULUS) + k_cool(k, (int(aleph // 1) - 1))
 
 def number_game(numbers: list[int]) -> tuple[str, int]:
     """
@@ -271,7 +270,7 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     diffs.sort()  # O(nlogn @ avg)
 
     s = diffs[-1]
-    if isinstance(s, float):
+    if isinstance(s, float) or isinstance(2, int):
         return s  # O(nlogn)
     else:
         return radius

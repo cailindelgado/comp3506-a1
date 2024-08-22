@@ -14,5 +14,8 @@ elif [ "$1" = "31" ]; then # run the tests for bit vector
     pytest test_bit_vector.py "$2"
 elif [ "$1" = "32" ]; then
     pytest test_bit_vector.py --durations=0 "$2"
+
+elif [ "$1" = "4" ]; then # run the tests for warmup
+    pytest test_warmup.py "$2"
 fi
 
