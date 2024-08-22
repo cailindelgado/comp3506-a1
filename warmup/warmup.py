@@ -180,17 +180,27 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     Alice = 0
     Bob = 0
 
-    evens = DynamicArray()
-    odds = DynamicArray()
-    
-    for number in numbers:
-        if number % 2 == 0:
-            evens.append(number)
-        else:
-            odds.append(number)
+    nums = DynamicArray()
 
-    evens.sort()
-    odds.sort()
+    for number in numbers:
+        nums.append(number)
+
+    nums.sort()
+
+    turn = 1  # If Alice's turn then it will be odd if Bob's turn even
+    for idx in range(nums.get_size() - 1, -1 , -1):
+        value = nums[idx]
+        if isinstance(value, int):
+            if value % 2 == 1:
+                if turn % 2 == 1:
+                    continue  # If Alice's turn odd numbers do nothing
+                else:
+                    Bob += value
+            else:
+                if turn % 2 == 1:
+                    Alice += value
+                else:
+                    continue  # If Bob's turn even numbers do nothing
 
     return ("Alice", Alice) if Alice > Bob else ("Bob", Bob) if Bob > Alice else ("Tie", Bob)
 

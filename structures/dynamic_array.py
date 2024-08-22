@@ -199,12 +199,12 @@ class DynamicArray:
 
         # update size
         if self.rev_values(index) >= self._left:  # if on right half
-            for idx in range(self.rev_values(index), self.get_size() - 1): # push in from right
+            for idx in range(self.rev_values(index), self.get_capacity() - 1): # push in from right
                 self._array[idx], self._array[idx + 1] = self._array[idx + 1], self._array[idx]
 
-            if self.rev_values(index) - self.get_size() <= 1:
-                a = self.rev_values(index)
-                self._array[a], self._array[a + 1] = self._array[a + 1], self._array[a]
+            if self.rev_values(index) - self.get_capacity() == 1:
+                indx = self.rev_values(index)
+                self._array[indx], self._array[indx + 1] = self._array[indx + 1], self._array[indx]
 
             self._size_right -= 1
 
@@ -212,10 +212,9 @@ class DynamicArray:
             for idx in range(self.rev_values(index), 1, -1):
                 self._array[idx], self._array[idx - 1] = self._array[idx - 1], self._array[idx]
 
-            if self.rev_values(index) - self._size_left <= 1:
-                a = self.rev_values(index)
-                self._array[a], self._array[a - 1] = self._array[a - 1], self._array[a]
-
+            if self._left - self.rev_values(index) == self._left - 1:
+                indx = self.rev_values(index)
+                self._array[indx], self._array[indx - 1] = self._array[indx - 1], self._array[indx]
 
             self._size_left -= 1
 

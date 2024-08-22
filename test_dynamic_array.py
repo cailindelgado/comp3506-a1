@@ -163,19 +163,19 @@ class TestDynamicArrayBasics:
         dynamic_array.sort()
         assert dynamic_array._array == [1, 2, 3, 4]
 
-    @pytest.mark.skip(reason="remove_at needs fixing")
+    # @pytest.mark.skip(reason="remove_at needs fixing")
     def test_sort2(self, dynamic_array):
-        dynamic_array.append(0)
-        dynamic_array.prepend(1)
-        dynamic_array.reverse()
-        dynamic_array.append(3)
-        dynamic_array.remove_at(2)
-        dynamic_array.remove_at(1)
-        assert dynamic_array._array == [None, 3, None, None]
-        dynamic_array.prepend(7)
-        dynamic_array.prepend(8)
+        dynamic_array.append(0) # [N, N, 0, N]
+        dynamic_array.prepend(1) # [N, 1, 0, N]
+        dynamic_array.reverse() # [N, 1, 0, N]
+        dynamic_array.append(3) # [3, 1, 0, N]
+        assert dynamic_array.remove_at(2) == 3 # [N, 1, 0, N]
+        assert dynamic_array.remove_at(1) == 1 # [N, N, 0, N]
+        assert dynamic_array._array == [None, None, 0, None]
+        dynamic_array.prepend(7) # [N, N, 0, 7]
+        dynamic_array.prepend(8) # [N, N, 0, 7, 8, N]
         dynamic_array.sort()
-        assert dynamic_array._array == [None, 3, 7, 8]
+        assert dynamic_array._array == [None, None, 0, 7, 8, None]
 
 # ==== More advanced testing ==== #
 
@@ -229,7 +229,9 @@ class TestDynamicArrayAdv:
                 print(lst)
                 print(f'prepended: {value}, reverse: {lst._reverse}, val: {value}\n~~~~~~~~~~~~~~~~~~~~\n')
             elif roll == 2:
+                print(f'\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
                 lst.reverse()
+                print(f'GET FLIPPED: \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
             elif roll == 3:
                 if lst.get_size() != 0:
                     val = rand(0, lst.get_size()) 
@@ -245,10 +247,9 @@ class TestDynamicArrayAdv:
                     print(lst)
                     lst.remove_at(val)
                     print(lst)
-                    print(f'remove_at: reverse: {lst._reverse}\n~~~~~~~~~~~~~~~~~~~~\n')
+                    print(f'remove_at: {lst._left} reverse: {lst._reverse}\n~~~~~~~~~~~~~~~~~~~~\n')
 
 
-    @pytest.mark.skip(reason= "GAE")
     def test_everything0(self, dynamic_array):
         self.populateAdv(dynamic_array, 15)
 
@@ -259,7 +260,6 @@ class TestDynamicArrayAdv:
         for i in range(dynamic_array.get_size() - 1):
             assert dynamic_array[i] <= dynamic_array[i + 1]
 
-    @pytest.mark.skip(reason= "GAE")
     def test_everything1(self, dynamic_array):
         self.populateAdv(dynamic_array, 100)
 
