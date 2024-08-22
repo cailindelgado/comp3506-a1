@@ -20,13 +20,27 @@ class TestBitVectorBasics:
         bit_vector.append(0)
         bit_vector.append(1)
         bit_vector.append(1)
-        assert bit_vector._MSB == 5
-        assert bit_vector._LSB == 0
         assert bit_vector[0] == 1
         assert bit_vector[1] == 1
         assert bit_vector[2] == 0
         assert bit_vector[3] == 1
         assert bit_vector[4] == 1
+        assert bit_vector._MSB == -2
+        assert bit_vector._LSB == 2 * bit_vector.BITS_PER_ELEMENT
+
+    def test_prepend(self, bit_vector):
+        bit_vector.prepend(1)
+        bit_vector.prepend(1)
+        bit_vector.prepend(0)
+        bit_vector.prepend(1)
+        bit_vector.prepend(1)
+        assert bit_vector[0] == 1
+        assert bit_vector[1] == 1
+        assert bit_vector[2] == 0
+        assert bit_vector[3] == 1
+        assert bit_vector[4] == 1
+        assert bit_vector._MSB == -5
+        assert bit_vector._LSB == 64
 
 
 # ======= More rigorous testing ======= 
