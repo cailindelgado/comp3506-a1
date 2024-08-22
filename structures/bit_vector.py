@@ -16,15 +16,18 @@ class BitVector:
     for storing bits than plain DynamicArray.
     """
 
-    BITS_PER_ELEMENT = 64  # range of each element is [0, 2^64 - 1]
+    BITS_PER_ELEMENT = 4# 64  # range of each element is [0, 2^64 - 1]
 
     def __init__(self) -> None:
         """
         We will use the dynamic array as our data storage mechanism
         """
         self._data = DynamicArray()
-        self._LSB = 0  # Position of the Leftmost bit 
-        self._MSB = 0  # Position of the Rightmost bit
+        self._data.prepend(0)
+        self._LSB = self.BITS_PER_ELEMENT # -1 * self.BITS_PER_ELEMENT + 1  # Position of the future LSB
+        self._MSB = -1  # Position of the future MSB
+        self._fip = False  # if false then normal, else flip outputs
+        self._reverse = False  # if false then normal, else logical reverse
 
     def __str__(self) -> str:
         """
@@ -42,13 +45,12 @@ class BitVector:
         Return None if index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if 0 <= (index//self.BITS_PER_ELEMENT) < self._data.get_size():
-            out = self._data[index//self.BITS_PER_ELEMENT]
-            if out is not None:
-
-                out &= 1>>(index % self.BITS_PER_ELEMENT)
-
-                return 1 if out != 0 else out
+        alpha = index // self.BITS_PER_ELEMENT
+        if 0 <= alpha < self._data.get_size():
+            word = self._data[0 - alpha - 1]
+            if word is not None:
+                word &= 1 << ((self.BITS_PER_ELEMENT - 1) - (index % self.BITS_PER_ELEMENT))
+                return 1 if word != 0 else word
 
     def __getitem__(self, index: int) -> int | None:
         """
@@ -63,18 +65,13 @@ class BitVector:
         Do not modify the vector if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if 0 <= (index//self.BITS_PER_ELEMENT) < self._data.get_size():
-            out = self._data[index//self.BITS_PER_ELEMENT]
+        alpha = index // self.BITS_PER_ELEMENT
+        if 0 <= alpha < self._data.get_size():
+            word = self._data[0 - alpha - 1]
 
-            if out is not None:
-                # print(f'Before: {out}')
-                out = out | (1 << (index % 64))
-                print(f'shifting: {index % 64}')
-                print((1 << (index % 64)))
-
-                # out |= 1 >> (index % 64)
-                # print(f'After: {out}')
-                self._data[index//self.BITS_PER_ELEMENT] = out
+            if word is not None:
+                word |= (1 << (index % self.BITS_PER_ELEMENT))
+                self._data[0 - alpha - 1] = word
 
     def unset_at(self, index: int) -> None:
         """
@@ -82,12 +79,13 @@ class BitVector:
         Do not modify the vector if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if 0 <= (index//self.BITS_PER_ELEMENT) < self._data.get_size():
-            out = self._data[index//self.BITS_PER_ELEMENT]
+        alpha = index//self.BITS_PER_ELEMENT
+        if 0 <= alpha < self._data.get_size():
+            word = self._data[0 - alpha - 1]
 
-            if out is not None:
-                out &= ~(1>>(index % self.BITS_PER_ELEMENT))
-                self._data[index//self.BITS_PER_ELEMENT] = out
+            if word is not None:
+                word &= ~ (1 << (index % self.BITS_PER_ELEMENT))
+                self._data[0 - alpha - 1] = word
 
     def __setitem__(self, index: int, state: int) -> None:
         """
@@ -109,11 +107,15 @@ class BitVector:
         if state is 0, set the bit to 0, otherwise set the bit to 1.
         Time complexity for full marks: O(1*)
         """
-        if self._MSB % 64 == 0:
-            self._data.append(0)
+        if self._MSB < (-1 * self.BITS_PER_ELEMENT):
+            self._data.prepend(0)
+            self._LSB += self.BITS_PER_ELEMENT
+            self._MSB = -1
 
-        self.__setitem__(self._MSB, state)
-        self._MSB += 1
+        # converts from [-4, -1] to coordinates in self state where LSB is on far right
+        alpha = self.BITS_PER_ELEMENT + self._MSB + (self.BITS_PER_ELEMENT * (self._data.get_size() - 1))
+        self.__setitem__(alpha, state)
+        self._MSB -= 1
 
     def prepend(self, state: Any) -> None:
         """
@@ -122,15 +124,12 @@ class BitVector:
         if state is 0, set the bit to 0, otherwise set the bit to 1.
         Time complexity for full marks: O(1*)
         """
-        if self._LSB > -64:
-            self._data.prepend(0)
-            self.__setitem__(64 + self._LSB, state)
-            self._MSB += 64
-            self._LSB = 0
-        else:
-            self.__setitem__(64 + self._LSB, state)
-            self._LSB -= 1
-            
+        if self._LSB % self.BITS_PER_ELEMENT == 0:
+            self._data.append(0)
+
+        # % Bits per elem because LSB is always in the far right elem
+        self.__setitem__(3 - self._LSB % self.BITS_PER_ELEMENT, state)
+        self._LSB += 1
 
     def reverse(self) -> None:
         """
