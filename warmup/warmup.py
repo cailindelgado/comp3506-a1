@@ -28,6 +28,7 @@ There will be hidden tests in each category that will be published only after th
 You may wish to import your data structures to help you with some of the
 problems. Or maybe not. We did it for you just in case.
 """
+from math import log2 as lg
 from structures.bit_vector import BitVector
 from structures.dynamic_array import DynamicArray
 from structures.linked_list import DoublyLinkedList
@@ -138,6 +139,12 @@ def k_cool(k: int, n: int) -> int:
     """
 
     MODULUS = 10**16 + 61
+    
+    if n == 0:
+        return 0 % MODULUS
+
+
+    first_kc_pow = lg(n) // 1
 
     # YOUR CODE GOES HERE
     answer = 0  # please update with the real answer... :-)
@@ -193,13 +200,17 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
         if isinstance(value, int):
             if value % 2 == 1:
                 if turn % 2 == 1:
+                    turn += 1
                     continue  # If Alice's turn odd numbers do nothing
                 else:
                     Bob += value
+                    turn += 1
             else:
                 if turn % 2 == 1:
                     Alice += value
+                    turn += 1
                 else:
+                    turn += 1
                     continue  # If Bob's turn even numbers do nothing
 
     return ("Alice", Alice) if Alice > Bob else ("Bob", Bob) if Bob > Alice else ("Tie", Bob)

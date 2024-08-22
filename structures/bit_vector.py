@@ -25,6 +25,8 @@ class BitVector:
         self._data = DynamicArray()
         self._LSB = 0  # Position of the Leftmost bit 
         self._MSB = 0  # Position of the Rightmost bit
+        self._fip = False  # if false then normal, else flip outputs
+        self._reverse = False  # if false then normal, else logical reverse
 
     def __str__(self) -> str:
         """
@@ -67,13 +69,8 @@ class BitVector:
             out = self._data[index//self.BITS_PER_ELEMENT]
 
             if out is not None:
-                # print(f'Before: {out}')
                 out = out | (1 << (index % 64))
-                print(f'shifting: {index % 64}')
-                print((1 << (index % 64)))
 
-                # out |= 1 >> (index % 64)
-                # print(f'After: {out}')
                 self._data[index//self.BITS_PER_ELEMENT] = out
 
     def unset_at(self, index: int) -> None:
@@ -86,7 +83,7 @@ class BitVector:
             out = self._data[index//self.BITS_PER_ELEMENT]
 
             if out is not None:
-                out &= ~(1>>(index % self.BITS_PER_ELEMENT))
+                out &= ~(1<<(index % self.BITS_PER_ELEMENT))
                 self._data[index//self.BITS_PER_ELEMENT] = out
 
     def __setitem__(self, index: int, state: int) -> None:

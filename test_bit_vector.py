@@ -15,15 +15,14 @@ class TestBitVectorBasics:
         assert bit_vector._LSB == 0
 
     def test_append(self, bit_vector):
-        bit_vector.append(3)
-        bit_vector.append(3)
+        bit_vector.append(1)
+        bit_vector.append(1)
         bit_vector.append(0)
-        bit_vector.append(3)
-        bit_vector.append(3)
+        bit_vector.append(1)
+        bit_vector.append(1)
         assert bit_vector._MSB == 5
         assert bit_vector._LSB == 0
         assert bit_vector[0] == 1
-        print(bit_vector)
         assert bit_vector[1] == 1
         assert bit_vector[2] == 0
         assert bit_vector[3] == 1
