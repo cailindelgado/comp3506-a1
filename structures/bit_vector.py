@@ -16,7 +16,7 @@ class BitVector:
     for storing bits than plain DynamicArray.
     """
 
-    BITS_PER_ELEMENT = 4# 64  # range of each element is [0, 2^64 - 1]
+    BITS_PER_ELEMENT = 64
 
     def __init__(self) -> None:
         """
