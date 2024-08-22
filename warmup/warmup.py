@@ -146,9 +146,7 @@ def k_cool(k: int, n: int) -> int:
     if aleph // 1 == aleph:
         return k**aleph % MODULUS
 
-    print(f'n: {n}, aleph: {aleph // 1}, new n: {(aleph // 1) - 1}')
-
-    return (k**int(aleph // 1) % MODULUS) + k_cool(k, (int(aleph // 1) - 1))
+    return (k**int(aleph // 1) % MODULUS) + k_cool(k, n - int(aleph // 1))
 
 def number_game(numbers: list[int]) -> tuple[str, int]:
     """
