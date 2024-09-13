@@ -28,10 +28,9 @@ There will be hidden tests in each category that will be published only after th
 You may wish to import your data structures to help you with some of the
 problems. Or maybe not. We did it for you just in case.
 """
-from math import log2 as lg
 from structures.bit_vector import BitVector
 from structures.dynamic_array import DynamicArray
-from structures.linked_list import DoublyLinkedList
+from structures.linked_list import DoublyLinkedList, Node
 
 
 def main_character(instring: list[int]) -> int:
@@ -56,14 +55,20 @@ def main_character(instring: list[int]) -> int:
     main_character([7, 1, 2, 7]) == 3
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
-    for i in range(len(instring)):
-        for j in range(i + 1, len(instring)):
-            if instring[i] == instring[j]:
-                return j
 
-    return -1  # O(n^2)
+    """
+    Approach: Use a big-ass (TM) bitvector to track characters we've seen
+    We back out as soon as we find a bit that's already set
+    O(n) worst case time where all elements in the input are unique
+    """
+    chars_seen = BitVector()
+    chars_seen.allocate(2**32)
+    for idx, char in enumerate(instring):
+        if chars_seen.get_at(char) == 1:
+            return idx
+        chars_seen.set_at(char)
+    return -1
 
-    # bit vector problem to simplify it (guess we rockin da O(n^2) bitvector bugged to hell and back)
 
 def missing_odds(inputs: list[int]) -> int:
     """
@@ -90,25 +95,36 @@ def missing_odds(inputs: list[int]) -> int:
     missing_odds([4, 1]) == 3
     missing_odds([4, 1, 8, 5]) == 10    # 3 and 7 are missing
     """
-    out = 0
-    new = [-1] * 2 # keeps track of the [smallest, largest] elements
-    new[0] = 0
-    new[1] = 0
 
-    for idx, val in enumerate(inputs):
-        if val % 2 == 1:
-            out -= val
+    """
+    Approach: Make a linear pass over the list. While making that pass, track
+    the lowest and highest value to get our range of interest, and also track
+    the sum of odd values oberved. Then, simply find out the sum of odds in
+    the range of interest, subtract the odds we did have, and the result is
+    the sum of the missing odds.
+    O(n) in the input array size.
+    """
+ 
+    upper = 0
+    lower = 10000000000000000 # 10**16
+    sum_of_odds = 0
+    for element in inputs:
+        # could use min or max here
+        if element < lower:
+            lower = element
+        if element > upper:
+            upper = element
+        if element % 2 == 1:
+            sum_of_odds += element
 
-        if val < inputs[new[0]]:  # new at 0 is smallest
-            new[0] = idx
-        elif val > inputs[new[1]]:  # new at 1 is largest
-            new[1] = idx
+    if lower % 2 == 0:
+        lower += 1
+    if upper % 2 == 0:
+        upper -= 1
 
-    for num in range(inputs[new[0]], inputs[new[1]] + 1):
-        if num % 2 == 1:
-            out += num
+    sum_of_odds_in_range = (upper + lower) * (upper - lower + 2) // 4
+    return sum_of_odds_in_range - sum_of_odds
 
-    return out  # O(nlogn)
 
 def k_cool(k: int, n: int) -> int:
     """
@@ -135,16 +151,34 @@ def k_cool(k: int, n: int) -> int:
     k_cool(128, 5000) == 9826529652304384 # The actual result is larger than 10^16 + 61,
                                           # so k_cool returns the remainder of division by 10^16 + 61
     """
+
+    """
+    Approach: Given n, we can check the bits that are on - these correspond to
+    powers of k we'd like to sum. To keep our arithmetic fast, we can keep
+    taking mods throughout our operation, as the output will be invariant.
+    This ensures the integers being manipulated stay small, or our operations
+    will stop taking constant time (and will scale with the number of bits
+    each integer is being represented by).
+    Runs in O(log n) for the given n
+    """
+ 
     MODULUS = 10**16 + 61
 
-    answer = 1 if n <= 1 else 0
-    new_n = n
-    while new_n > 1:
-        aleph = lg(new_n) // 1
-        answer += k**aleph
-        new_n = new_n - aleph
+    k %= MODULUS
 
-    return int(answer) % MODULUS
+    k_pow = 1
+
+    ans = 0
+    while n > 0:
+        if n & 1 == 1:
+            ans += k_pow
+            ans %= MODULUS
+        n >>= 1
+        k_pow *= k
+        k_pow %= MODULUS
+
+    return ans
+
 
 def number_game(numbers: list[int]) -> tuple[str, int]:
     """
@@ -179,36 +213,58 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     The same happens on the next move.
     So, nobody picks any numbers to increase their score, which results in a Tie with both players having scores of 0.
     """
-    Alice = 0
-    Bob = 0
 
-    nums = DynamicArray()
+    """
+    #Pythonic approach with in-builts
+    
+    numbers.sort(reverse=True)
+    alice = 0
+    bob = 0
+    for i, e in enumerate(numbers):
+        if i % 2 == 0:
+            if e % 2 == 0:
+                alice += e
+        else:
+            if e % 2 == 1:
+                bob += e
 
-    for number in numbers:
-        nums.append(number)
+    if alice > bob:
+        return "Alice", alice
+    if alice < bob:
+        return "Bob", bob
+    return "Tie", alice
+    """
 
-    nums.sort()
-
-    turn = 1  # If Alice's turn then it will be odd if Bob's turn even
-    for idx in range(nums.get_size() - 1, -1 , -1):
-        value = nums[idx]
-        if isinstance(value, int):
-            if value % 2 == 1:
-                if turn % 2 == 1:
-                    turn += 1
-                    continue  # If Alice's turn odd numbers do nothing
-                else:
-                    Bob += value
-                    turn += 1
-            else:
-                if turn % 2 == 1:
-                    Alice += value
-                    turn += 1
-                else:
-                    turn += 1
-                    continue  # If Bob's turn even numbers do nothing
-
-    return ("Alice", Alice) if Alice > Bob else ("Bob", Bob) if Bob > Alice else ("Tie", Bob)
+    """
+    Approach: Since the optimal move for either Alice or Bob is to take the
+    highest value no matter whether it contributes to their own score or not,
+    we can simply sort the list and then iterate it high to low.
+    Time: O(n log n) expected (since we use quicksort).
+    """
+    my_list = DynamicArray()
+    my_list.build_from_list(numbers)
+    my_list.sort()
+    my_list.reverse()
+    alice = 0
+    bob = 0
+    index = 0
+    for element in my_list.iterate():
+        # Alice's turn
+        if index % 2 == 0:
+            # Alice gains points
+            if element % 2 == 0:
+                alice += element
+            # Or Alice 'steals' but does not gain
+        else:
+            # Bob gains points
+            if element % 2 == 1:
+                bob += element
+            # Or Bob 'steals' but does not gain
+    if alice > bob:
+        return "Alice", alice
+    if alice < bob:
+        return "Bob", bob
+    return "Tie", tie
 
 def road_illumination(road_length: int, poles: list[int]) -> float:
     """
@@ -237,36 +293,44 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     road_illumination(15, [15, 5, 3, 7, 9, 14, 0]) == 2.5
     road_illumination(5, [2, 5]) == 2.0
     """
-    radius = 0
-    da = DynamicArray()
-    diffs = DynamicArray() 
 
-    for item in poles:  # O(n)
-        da.append(item)
+    """
+    # Another pythonic one for you - see how much functionality we take
+    # for granted!
+    poles.sort()
+    d = poles[0]
+    d = max(d, road_length - poles[-1])
+    for i in range(1, len(poles)):
+        d = max(d, (poles[i] - poles[i - 1]) / 2)
+    return d
+    """
+    
+    """
+    Approach: Once again, this problem relies on sorting. If we sort the
+    poles, we can make a linear pass to find the largest pole-to-pole delta -
+    plus a little extra work to check the start and end of the road.
+    Runs in O(n log n) expected.
+    """
+    
+    # We never tested this case, but it does exist...
+    if len(poles) == 0:
+        return float('inf')
 
-    da.sort()  # O(nlogn)
+    my_list = DynamicArray()
+    my_list.build_from_list(poles)
+    my_list.sort()
 
-    s = da[0]
-    e = da[-1]
+    # First, let us check road_start <-> first_pole
+    max_dist = my_list[0]
 
-    if isinstance(s, int) and isinstance(e, int):
-        lmr = s
-        rmr = road_length - e  
+    # Then, we check last_pole <-> road_end
+    end_dist = road_length - my_list[my_list.size() - 1]
+    if end_dist > max_dist:
+        max_dist = end_dist
 
-        diffs.append(rmr)
-        diffs.append(lmr)
-
-    for idx in range(da.get_size() - 1):  # O(n)
-        s = da[idx + 1]
-        e = da[idx]
-
-        if isinstance(s, int) and isinstance(e, int):
-            diffs.append((s - e)/ 2)
-
-    diffs.sort()  # O(nlogn @ avg)
-
-    s = diffs[-1]
-    if isinstance(s, float) or isinstance(2, int):
-        return s  # O(nlogn)
-    else:
-        return radius
+    # Finally, check all pole-to-pole deltas
+    for i in range(1, my_list.size()):
+        this_dist = (poles[i] - poles[i-1]) / 2
+        if this_dist > max_dist:
+            max_dist = this_dist
+    return max_dist

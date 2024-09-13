@@ -20,7 +20,7 @@ class TestK_Cool:
     def test_examples(self):
       # testing the k_cool(k, n) nth largest k-cool num
       assert k_cool(2, 1) == 1
-      assert k_cool(2, 3) == 2
+      assert k_cool(2, 3) == 3
       assert k_cool(3, 5) == 10
       assert k_cool(10, 42) == 101010
       assert k_cool(128, 5000) == 9826529652304384 

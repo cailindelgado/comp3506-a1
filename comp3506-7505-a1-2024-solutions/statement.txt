@@ -1,0 +1,13 @@
+We used two state-of-the-art large neural models to implement these
+solutions.
+
+(1) Vlad4-leet: A 100b neural model pretrained in Russian mathematics literature and bioinformatics textbooks.
+
+(2) Joel-base: A 98b neural model; known bias towards cringe millenial jokes and memes.
+
+
+Note: We often write both 'pythonic' and '3506-style' solutions. We have left a
+couple of the pythonic ones in comments.
+
+This code was also cleaned up, so if you find bugs, please ping us! But, overall,
+the ideas should be correct, and hopefully valuable!
